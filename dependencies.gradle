@@ -1,0 +1,12 @@
+ext {
+  javaVersion = 1.7
+
+  ci = 'true'.equals(System.getenv('CI'))
+
+  /* Dependencies */
+  moshi = 'com.squareup.moshi:moshi:1.2.0'
+
+  /* Testing */
+  junit = 'junit:junit:4.12'
+  assertJ = 'org.assertj:assertj-core:2.5.0'
+}

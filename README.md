@@ -1,2 +1,2 @@
-# moshi-lazy-adapters
+# Moshi Lazy Adapters
 A collection of simple JsonAdapters for Moshi.
