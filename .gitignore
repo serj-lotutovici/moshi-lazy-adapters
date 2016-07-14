@@ -1,0 +1,11 @@
+# Gradle junk
+.gradle/
+build/
+local.properties
+
+# Idea junk
+.idea/
+*.iml
+
+# MacOS junk
+.DS_Store

@@ -1,0 +1,19 @@
+apply plugin: 'checkstyle'
+
+task('checkstyle', type: Checkstyle) {
+  configFile rootProject.file('checkstyle.xml')
+  source = ['src/main/java', 'src/test/java']
+  ignoreFailures false
+  showViolations true
+  include '**/*.java'
+
+  classpath = files()
+  configProperties = [
+          'proj.module.dir'      : projectDir.absolutePath,
+          'checkstyle.cache.file': './build/cache/checkstyle-cache'
+  ]
+}
+
+afterEvaluate {
+  tasks.findByName('check').dependsOn('checkstyle')
+}

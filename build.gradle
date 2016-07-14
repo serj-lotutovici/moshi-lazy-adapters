@@ -1,0 +1,29 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+apply plugin: 'java'
+apply from: rootProject.file('dependencies.gradle')
+apply from: rootProject.file('checkstyle.gradle')
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+
+/** Gradle wrapper distribution. */
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.12'
+  distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
+}
+
+sourceCompatibility = javaVersion
+
+dependencies {
+  compile moshi
+
+  testCompile junit
+  testCompile assertJ
+}
