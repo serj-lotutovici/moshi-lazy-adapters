@@ -7,6 +7,9 @@ jdk:
 script:
   - ./gradlew clean check --stacktrace
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 branches:
   except:
     - gh-pages
