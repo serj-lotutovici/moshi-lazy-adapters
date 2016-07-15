@@ -11,6 +11,7 @@ repositories {
 apply plugin: 'java'
 apply from: rootProject.file('dependencies.gradle')
 apply from: rootProject.file('checkstyle.gradle')
+apply from: rootProject.file('jacoco.gradle')
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 
 /** Gradle wrapper distribution. */
