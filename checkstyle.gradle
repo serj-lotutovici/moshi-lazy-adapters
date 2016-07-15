@@ -1,7 +1,11 @@
 apply plugin: 'checkstyle'
 
-task('checkstyle', type: Checkstyle) {
-  configFile rootProject.file('checkstyle.xml')
+checkstyle {
+  toolVersion '6.0'
+}
+
+task checkstyle(type: Checkstyle) {
+  configFile rootProject.file('config/checkstyle/checkstyle.xml')
   source = ['src/main/java', 'src/test/java']
   ignoreFailures false
   showViolations true
@@ -15,5 +19,7 @@ task('checkstyle', type: Checkstyle) {
 }
 
 afterEvaluate {
-  tasks.findByName('check').dependsOn('checkstyle')
+  if (project.tasks.findByName('check')) {
+    check.dependsOn('checkstyle')
+  }
 }

@@ -21,10 +21,14 @@ task wrapper(type: Wrapper) {
 }
 
 sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
 
 dependencies {
   compile moshi
 
   testCompile junit
   testCompile assertJ
+  testCompile retrofit
+  testCompile retrofitMoshiConverter
+  testCompile mockWebServer
 }

@@ -1,5 +1,5 @@
 ext {
-  javaVersion = 1.7
+  javaVersion = JavaVersion.VERSION_1_7
 
   ci = 'true'.equals(System.getenv('CI'))
 
@@ -9,4 +9,7 @@ ext {
   /* Testing */
   junit = 'junit:junit:4.12'
   assertJ = 'org.assertj:assertj-core:2.5.0'
+  retrofit = 'com.squareup.retrofit2:retrofit:2.1.0'
+  retrofitMoshiConverter = 'com.squareup.retrofit2:converter-moshi:2.1.0'
+  mockWebServer = 'com.squareup.okhttp3:mockwebserver:3.4.1'
 }
