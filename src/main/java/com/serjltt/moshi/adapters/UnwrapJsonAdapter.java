@@ -68,7 +68,7 @@ public final class UnwrapJsonAdapter<T> extends JsonAdapter<T> {
   }
 
   @Override public String toString() {
-    return String.format("JsonAdapter%s(%s)", Arrays.asList(path), adapter);
+    return adapter + String.format(".wrappedIn(%s)", Arrays.asList(path));
   }
 
   /**

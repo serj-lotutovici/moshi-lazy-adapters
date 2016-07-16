@@ -17,14 +17,11 @@ package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
 import com.squareup.moshi.Types;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
@@ -36,7 +33,7 @@ public final class UnwrapJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
       .add(UnwrapJsonAdapter.FACTORY)
-      .add(new CustomAdapter()) // We need to check that other annotations are not lost.
+      .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .add(new ThrowingAdapter()) // We need to check that exceptions are propagated correctly.
       .build();
 
@@ -229,20 +226,19 @@ public final class UnwrapJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<Data1> adapter = moshi.adapter(Data1.class, Collections.singleton(new UnwrapJson() {
-      @Override public String[] value() {
-        return new String[] {"1", "2"};
-      }
+    JsonAdapter<Data1> adapter = moshi.adapter(String.class, Collections.singleton(
+        new UnwrapJson() {
+          @Override public String[] value() {
+            return new String[] {"1", "2"};
+          }
 
-      @Override public Class<? extends Annotation> annotationType() {
-        return UnwrapJson.class;
-      }
-    }));
+          @Override public Class<? extends Annotation> annotationType() {
+            return UnwrapJson.class;
+          }
+        }));
 
     assertThat(adapter.toString())
-        .isEqualTo("JsonAdapter[1, 2]("
-            + "JsonAdapter(com.serjltt.moshi.adapters.UnwrapJsonAdapterTest$Data1)"
-            + ".nullSafe())");
+        .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2])");
   }
 
   static class Data1 {
@@ -261,21 +257,6 @@ public final class UnwrapJsonAdapterTest {
 
   static class Data4 {
     @UnwrapJson("1") Throws th;
-  }
-
-  @JsonQualifier
-  @Retention(RetentionPolicy.RUNTIME) @interface Custom {
-  }
-
-  /** String adapter, that will append "Custom" on read, and exclude it on write. */
-  static final class CustomAdapter {
-    @Custom @FromJson String fromJson(String str) {
-      return str + "Custom";
-    }
-
-    @ToJson String toJson(@Custom String str) {
-      return str.substring(0, str.length() - "Custom".length());
-    }
   }
 
   static class Throws {

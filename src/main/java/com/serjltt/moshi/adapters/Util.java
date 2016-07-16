@@ -20,8 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 final class Util {
-  public static Annotation findAnnotation(
-      Set<? extends Annotation> annotations, Class<? extends Annotation> annotationClass) {
+  public static Annotation findAnnotation(Set<? extends Annotation> annotations,
+      Class<? extends Annotation> annotationClass) {
     if (annotations.isEmpty()) return null; // Save an iterator in the common case.
     for (Annotation annotation : annotations) {
       if (annotation.annotationType() == annotationClass) {
@@ -29,6 +29,17 @@ final class Util {
       }
     }
     return null;
+  }
+
+  public static boolean hasAnnotation(Set<? extends Annotation> annotations,
+      Class<? extends Annotation> annotationClass) {
+    if (annotations.isEmpty()) return false; // Save an iterator in the common case.
+    for (Annotation annotation : annotations) {
+      if (annotation.annotationType() == annotationClass) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private Util() {
