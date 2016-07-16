@@ -23,10 +23,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Indicates that the annotated type should be unwrapped by the {@linkplain UnwrapJsonAdapter} and
- * can be found in the provided {@code path}.
+ * Indicates that the annotated type/field should be unwrapped by the {@linkplain UnwrapJsonAdapter}
+ * and can be found in the provided {@code path}.
  *
- * <p> For example if a json object is:
+ * <p>For example if a json object is:
  * <pre>
  *   {
  *     "response": {
@@ -45,7 +45,7 @@ import java.lang.annotation.RetentionPolicy;
  * The resulting response returned by {@code response.body()} will be a {@code String} with the
  * value {@code "OK"}.
  *
- * <p> To leverage from {@linkplain UnwrapJson} the {@linkplain UnwrapJsonAdapter#FACTORY} must be
+ * <p>To leverage from {@linkplain UnwrapJson} the {@linkplain UnwrapJsonAdapter#FACTORY} must be
  * added  to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>

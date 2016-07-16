@@ -16,6 +16,7 @@
 package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.Moshi;
+import java.io.IOException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Rule;
@@ -34,6 +35,7 @@ public final class LazyAdaptersRetrofitTest {
 
   public final Moshi moshi = new Moshi.Builder()
       .add(UnwrapJsonAdapter.FACTORY)
+      .add(FirstElementJsonAdapter.FACTORY)
       .build();
 
   public final Retrofit retrofit = new Retrofit.Builder()
@@ -41,17 +43,38 @@ public final class LazyAdaptersRetrofitTest {
       .baseUrl(server.url("/"))
       .build();
 
+  public final Service service = retrofit.create(Service.class);
+
   @Test public void unwrapJsonAdapter() throws Exception {
-    server.enqueue(new MockResponse().setBody("{\n"
+    assertResponse(service.unwrap(), "{\n"
         + "  \"one\": {\n"
         + "    \"two\": \"works!\"\n"
         + "  }\n"
-        + "}"));
+        + "}", "works!");
+  }
 
-    Service service = retrofit.create(Service.class);
-    Response<String> response = service.unwrap().execute();
+  @Test public void firstElementJsonAdapter() throws Exception {
+    assertResponse(service.firstElement(), "[\n"
+        + "  \"expected\",\n"
+        + "  \"ignored\"\n"
+        + "]", "expected");
+  }
 
-    assertThat(response.body()).isEqualTo("works!");
+  @Test public void unwrapFirstElement() throws Exception {
+    assertResponse(service.unwrapFirstElement(), "{\n"
+        + "  \"one\": {\n"
+        + "    \"two\": [\n"
+        + "      \"first\"\n"
+        + "    ]\n"
+        + "  }\n"
+        + "}", "first");
+  }
+
+  private <T> void assertResponse(Call<T> call, String input, T expected) throws IOException {
+    server.enqueue(new MockResponse().setBody(input));
+
+    Response<T> response = call.execute();
+    assertThat(response.body()).isEqualTo(expected);
   }
 
   /** Test service for all lazy adapters. */
@@ -59,5 +82,14 @@ public final class LazyAdaptersRetrofitTest {
     /** Helps to test the unwrap adapter. */
     @GET("/")
     @UnwrapJson({"one", "two"}) Call<String> unwrap();
+
+    /** Helps to test the first element json adapter. */
+    @GET("/")
+    @FirstElement Call<String> firstElement();
+
+    /** Helps to test the first element json adapter. */
+    @GET("/")
+    @UnwrapJson({"one", "two"})
+    @FirstElement Call<String> unwrapFirstElement();
   }
 }
