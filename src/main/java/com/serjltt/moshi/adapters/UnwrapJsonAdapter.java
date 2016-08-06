@@ -28,7 +28,7 @@ import java.util.Set;
 
 import static com.serjltt.moshi.adapters.Util.findAnnotation;
 
-/** {@linkplain JsonAdapter} that unwraps a type annotated with {@linkplain UnwrapJson}. */
+/** {@linkplain JsonAdapter} that unwraps the type/field annotated with {@linkplain UnwrapJson}. */
 public final class UnwrapJsonAdapter<T> extends JsonAdapter<T> {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
