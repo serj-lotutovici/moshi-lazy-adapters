@@ -33,17 +33,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class LazyAdaptersRetrofitTest {
   @Rule public final MockWebServer server = new MockWebServer();
 
-  public final Moshi moshi = new Moshi.Builder()
+  private final Moshi moshi = new Moshi.Builder()
       .add(UnwrapJsonAdapter.FACTORY)
       .add(FirstElementJsonAdapter.FACTORY)
       .build();
 
-  public final Retrofit retrofit = new Retrofit.Builder()
+  private final Retrofit retrofit = new Retrofit.Builder()
       .addConverterFactory(MoshiConverterFactory.create(moshi))
       .baseUrl(server.url("/"))
       .build();
 
-  public final Service service = retrofit.create(Service.class);
+  private final Service service = retrofit.create(Service.class);
 
   @Test public void unwrapJsonAdapter() throws Exception {
     assertResponse(service.unwrap(), "{\n"
@@ -78,7 +78,7 @@ public final class LazyAdaptersRetrofitTest {
   }
 
   /** Test service for all lazy adapters. */
-  interface Service {
+  private interface Service {
     /** Helps to test the unwrap adapter. */
     @GET("/")
     @UnwrapJson({"one", "two"}) Call<String> unwrap();

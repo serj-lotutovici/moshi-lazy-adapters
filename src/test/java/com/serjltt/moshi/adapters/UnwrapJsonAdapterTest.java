@@ -246,7 +246,7 @@ public final class UnwrapJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<Data1> adapter = moshi.adapter(String.class, Collections.singleton(
+    JsonAdapter<String> adapter = moshi.adapter(String.class, Collections.singleton(
         new UnwrapJson() {
           @Override public String[] value() {
             return new String[] {"1", "2"};
@@ -261,29 +261,29 @@ public final class UnwrapJsonAdapterTest {
         .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2])");
   }
 
-  static class Data1 {
+  private static class Data1 {
     String str;
     int val;
   }
 
-  static class Data2 {
+  private static class Data2 {
     @UnwrapJson({"1", "2"}) Data1 data;
   }
 
-  static class Data3 {
+  private static class Data3 {
     @Custom
     @UnwrapJson("1") String str;
   }
 
-  static class Data4 {
+  private static class Data4 {
     @UnwrapJson("1") Throws th;
   }
 
-  static class Throws {
+  private static class Throws {
   }
 
   /** String adapter, that will throw on read and write. */
-  static final class ThrowingAdapter {
+  private static final class ThrowingAdapter {
     @FromJson Throws fromJson(String str) throws IOException {
       throw new IOException("ThrowingAdapter.fromJson");
     }
