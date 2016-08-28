@@ -145,12 +145,12 @@ public final class FirstElementJsonAdapterTest {
     assertThat(toJson).isEqualTo("{\"obj\":[null]}");
   }
 
-  static class Data {
+  private static class Data {
     @FirstElement
     @Json(name = "obj") String str;
   }
 
-  static class Data2 {
+  private static class Data2 {
     @FirstElement
     @Custom String str;
   }

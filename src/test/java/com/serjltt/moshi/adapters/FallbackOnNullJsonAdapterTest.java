@@ -43,7 +43,7 @@ public final class FallbackOnNullJsonAdapterTest {
     assertForClass(WrapsBool.class, false, true, "{\"first\":false,\"second\":true}");
   }
 
-  static class WrapsBool implements Wrapper<Boolean> {
+  private static class WrapsBool implements Wrapper<Boolean> {
     @FallbackOnNull boolean first;
     @FallbackOnNull(fallbackBoolean = true) boolean second;
 
@@ -60,7 +60,7 @@ public final class FallbackOnNullJsonAdapterTest {
     assertForClass(WrapsByte.class, Byte.MIN_VALUE, (byte) 42, "{\"first\":128,\"second\":42}");
   }
 
-  static class WrapsByte implements Wrapper<Byte> {
+  private static class WrapsByte implements Wrapper<Byte> {
     @FallbackOnNull byte first;
     @FallbackOnNull(fallbackByte = 42) byte second;
 
@@ -77,7 +77,7 @@ public final class FallbackOnNullJsonAdapterTest {
     assertForClass(WrapsChar.class, '\u0000', 'a', "{\"first\":\"\\u0000\",\"second\":\"a\"}");
   }
 
-  static class WrapsChar implements Wrapper<Character> {
+  private static class WrapsChar implements Wrapper<Character> {
     @FallbackOnNull char first;
     @FallbackOnNull(fallbackChar = 'a') char second;
 
@@ -95,7 +95,7 @@ public final class FallbackOnNullJsonAdapterTest {
         "{\"first\":4.9E-324,\"second\":12.0}");
   }
 
-  static class WrapsDouble implements Wrapper<Double> {
+  private static class WrapsDouble implements Wrapper<Double> {
     @FallbackOnNull double first;
     @FallbackOnNull(fallbackDouble = 12.0) double second;
 
@@ -113,7 +113,7 @@ public final class FallbackOnNullJsonAdapterTest {
         "{\"first\":1.4E-45,\"second\":16.0}");
   }
 
-  static class WrapsFloat implements Wrapper<Float> {
+  private static class WrapsFloat implements Wrapper<Float> {
     @FallbackOnNull float first;
     @FallbackOnNull(fallbackFloat = 16.0f) float second;
 
@@ -130,7 +130,7 @@ public final class FallbackOnNullJsonAdapterTest {
     assertForClass(WrapsInt.class, Integer.MIN_VALUE, -1, "{\"first\":-2147483648,\"second\":-1}");
   }
 
-  static class WrapsInt implements Wrapper<Integer> {
+  private static class WrapsInt implements Wrapper<Integer> {
     @FallbackOnNull int first;
     @FallbackOnNull(fallbackInt = -1) int second;
 
@@ -148,7 +148,7 @@ public final class FallbackOnNullJsonAdapterTest {
         "{\"first\":-9223372036854775808,\"second\":-113}");
   }
 
-  static class WrapsLong implements Wrapper<Long> {
+  private static class WrapsLong implements Wrapper<Long> {
     @FallbackOnNull long first;
     @FallbackOnNull(fallbackLong = -113) long second;
 
@@ -166,7 +166,7 @@ public final class FallbackOnNullJsonAdapterTest {
         "{\"first\":-32768,\"second\":121}");
   }
 
-  static class WrapsShort implements Wrapper<Short> {
+  private static class WrapsShort implements Wrapper<Short> {
     @FallbackOnNull short first;
     @FallbackOnNull(fallbackShort = 121) short second;
 
@@ -194,7 +194,7 @@ public final class FallbackOnNullJsonAdapterTest {
     assertThat(toJson).isEqualTo("{\"willFallback\":1,\"willMultiply\":3}");
   }
 
-  static class AnotherInt {
+  private static class AnotherInt {
     @FallbackOnNull(fallbackInt = 2) @Multiply int willFallback;
     @FallbackOnNull(fallbackInt = 2) @Multiply int willMultiply;
   }
@@ -282,14 +282,14 @@ public final class FallbackOnNullJsonAdapterTest {
     assertThat(toJson).isEqualTo(asJson);
   }
 
-  interface Wrapper<P> {
+  private interface Wrapper<P> {
     P first();
 
     P second();
   }
 
   @JsonQualifier
-  @Retention(RetentionPolicy.RUNTIME) @interface Multiply {
+  @Retention(RetentionPolicy.RUNTIME) private @interface Multiply {
     final class MultiplyAdapter {
       @Multiply @FromJson int fromJson(int val) {
         return val * 2;
