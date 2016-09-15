@@ -137,13 +137,13 @@ Download [the latest JAR][dl] or depend via Maven:
 ```xml
 <dependency>
   <groupId>com.serjltt.moshi</groupId>
-  <artifactId>moshi-lazy-adaptes</artifactId>
+  <artifactId>moshi-lazy-adapters</artifactId>
   <version>x.y</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.serjltt.moshi:moshi-lazy-adaptes:x.y'
+compile 'com.serjltt.moshi:moshi-lazy-adapters:x.y'
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][sonatype].
@@ -174,4 +174,4 @@ License
  [latestbuild]: http://search.maven.org/#search%7Cga%7C1%7Ccom.serjltt.moshi
  [latestbuild.svg]: https://img.shields.io/maven-central/v/com.serjltt.moshi/moshi-lazy-adapters.svg
  [sonatype]: https://oss.sonatype.org/content/repositories/snapshots/com/serjltt/moshi/
- [dl]: https://search.maven.org/remote_content?g=com.serjltt.moshi&a=moshi-lazy-adaptes&v=LATEST
+ [dl]: https://search.maven.org/remote_content?g=com.serjltt.moshi&a=moshi-lazy-adapters&v=LATEST
