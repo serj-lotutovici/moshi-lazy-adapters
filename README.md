@@ -4,6 +4,7 @@ Moshi Lazy Adapters
 
 [![Build Status][travis.svg]][travis]
 [![codecov][codecov.svg]][codecov]
+[![Latest Build][latestbuild.svg]][latestbuild]
 
 A collection of simple JsonAdapters for [Moshi][moshi].
  
@@ -170,5 +171,7 @@ License
  [travis.svg]: https://travis-ci.org/serj-lotutovici/moshi-lazy-adapters.svg?branch=master
  [codecov]: https://codecov.io/gh/serj-lotutovici/moshi-lazy-adapters
  [codecov.svg]: https://codecov.io/gh/serj-lotutovici/moshi-lazy-adapters/branch/master/graph/badge.svg
+ [latestbuild]: http://search.maven.org/#search%7Cga%7C1%7Ccom.serjltt.moshi
+ [latestbuild.svg]: https://img.shields.io/maven-central/v/com.serjltt.moshi/moshi-lazy-adapters.svg
  [sonatype]: https://oss.sonatype.org/content/repositories/snapshots/com/serjltt/moshi/
  [dl]: https://search.maven.org/remote_content?g=com.serjltt.moshi&a=moshi-lazy-adaptes&v=LATEST
