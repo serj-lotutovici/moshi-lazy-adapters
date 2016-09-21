@@ -1,6 +1,13 @@
 buildscript {
   repositories {
     mavenCentral()
+
+    maven { url 'https://jitpack.io' }
+  }
+
+  // Needed to use auto-value-moshi in tests
+  dependencies {
+    classpath 'com.github.tbroyer:gradle-apt-plugin:v0.8'
   }
 }
 
@@ -9,6 +16,7 @@ repositories {
 }
 
 apply plugin: 'java'
+apply plugin: 'net.ltgt.apt'
 apply from: rootProject.file('dependencies.gradle')
 apply from: rootProject.file('checkstyle.gradle')
 apply from: rootProject.file('jacoco.gradle')
@@ -16,6 +24,14 @@ apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
+
+sourceSets {
+  // Setup source sets to split unit and integration tests
+  test {
+    java.srcDirs = ['src/unitTest/java', 'src/integrationTest/java']
+    resources.srcDirs = ['src/unitTest/resources', 'src/integrationTest/resources']
+  }
+}
 
 dependencies {
   compile moshi
@@ -25,4 +41,8 @@ dependencies {
   testCompile retrofit
   testCompile retrofitMoshiConverter
   testCompile mockWebServer
+
+  // This is needed to test integration with auto-value-moshi
+  testCompileOnly autoValueMoshi
+  testApt autoValueMoshi
 }
