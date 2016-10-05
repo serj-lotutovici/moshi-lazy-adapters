@@ -14,7 +14,7 @@ are not present in the main library.
 How To Use It
 ---
 
-Moshi-Lazy-Adapters if **not** forcing any of it's own adapters by default. To leverage from any of
+Moshi-Lazy-Adapters is **not** forcing any of it's own adapters by default. To leverage from any of
 the provided annotations/adapters add their respective factory to your `Moshi.Builder`:
 
 ```java
