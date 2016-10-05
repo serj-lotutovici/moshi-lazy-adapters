@@ -15,8 +15,10 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.google.auto.value.AutoValue;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import java.io.IOException;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,5 +46,22 @@ public class LazyAdaptersAutoValueTest {
     assertThat(fromJson.name()).isEqualTo("data_name");
     assertThat(fromJson.meta().value1).isEqualTo("value1");
     assertThat(fromJson.meta().value2).isEqualTo(2);
+  }
+
+  @Test public void unwrapSecond() throws IOException {
+    final ServerSideLocationRequestMessage response = moshi.adapter(ServerSideLocationRequestMessage.class).fromJson("{\"foo\":{\"bar\":2,\"circle_id\":\"5530fa4915c1cf21e3043009\",\"circle\":\"5530fa4915c1cf21e3043009\"}}");
+    assertThat(response.bar()).isEqualTo(2);
+    assertThat(response.circleId()).isEqualTo("5530fa4915c1cf21e3043009");
+    assertThat(response.circle()).isEqualTo("5530fa4915c1cf21e3043009");
+  }
+
+  @AutoValue public abstract static class ServerSideLocationRequestMessage {
+    public static JsonAdapter<ServerSideLocationRequestMessage> jsonAdapter(final Moshi moshi) {
+      return new AutoValue_LazyAdaptersAutoValueTest_ServerSideLocationRequestMessage.MoshiJsonAdapter(moshi);
+    }
+
+    @UnwrapJson({ "foo", "bar" }) public abstract int bar();
+    @UnwrapJson({ "foo", "circle" }) public abstract String circle();
+    @UnwrapJson({ "foo", "circle_id" }) public abstract String circleId();
   }
 }
