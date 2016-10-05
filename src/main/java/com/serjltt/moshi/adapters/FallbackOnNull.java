@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
  * fallback value.
  *
  * <p>To leverage from {@linkplain FallbackOnNull} the {@linkplain FallbackOnNullJsonAdapter#FACTORY
- * } must be added  to a {@linkplain Moshi Moshi instance}:
+ * } must be added to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
