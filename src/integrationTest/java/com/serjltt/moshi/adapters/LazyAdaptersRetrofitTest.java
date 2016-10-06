@@ -17,15 +17,19 @@ package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
+import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.Rule;
 import org.junit.Test;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,6 +55,18 @@ public final class LazyAdaptersRetrofitTest {
         + "    \"two\": \"works!\"\n"
         + "  }\n"
         + "}", "works!");
+  }
+
+  @Test public void wrapPostBody() throws Exception {
+    server.enqueue(new MockResponse());
+
+    Call<ResponseBody> call = service.wrappedPost("one");
+    call.execute();
+
+    RecordedRequest recorded = server.takeRequest();
+    assertThat(recorded.getBody()
+        .readUtf8())
+        .isEqualTo("{\"1\":{\"2\":\"one\"}}");
   }
 
   @Test public void firstElementJsonAdapter() throws Exception {
@@ -82,6 +98,8 @@ public final class LazyAdaptersRetrofitTest {
     /** Helps to test the unwrap adapter. */
     @GET("/")
     @Wrapped({"one", "two"}) Call<String> unwrap();
+
+    @POST("/") Call<ResponseBody> wrappedPost(@Body @Wrapped({"1", "2"}) String value);
 
     /** Helps to test the first element json adapter. */
     @GET("/")
