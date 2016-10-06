@@ -18,13 +18,14 @@ package com.serjltt.moshi.adapters;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Indicates that the annotated type/field should be unwrapped by the {@linkplain UnwrapJsonAdapter}
- * and can be found in the provided {@code path}.
+ * Indicates that the annotated type/field should be unwrapped by the {@linkplain
+ * WrappedJsonAdapter} and can be found in the provided {@code path}.
  *
  * <p>For example if a json object is:
  * <pre>
@@ -39,29 +40,49 @@ import java.lang.annotation.RetentionPolicy;
  *
  * <pre><code>
  *   {@literal @}GET("path/")
- *   {@literal @}UnwrapJson({"response", "status"}) Call&lt;String&gt; getStatus();
+ *   {@literal @}Wrapped({"response", "status"}) Call&lt;String&gt; getStatus();
  * </code></pre>
  *
  * The resulting response returned by {@code response.body()} will be a {@code String} with the
  * value {@code "OK"}.
  *
- * <p>To leverage from {@linkplain UnwrapJson} the {@linkplain UnwrapJsonAdapter#FACTORY} must be
+ * <p>To leverage from {@linkplain Wrapped} the {@linkplain WrappedJsonAdapter#FACTORY} must be
  * added  to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(UnwrapJsonAdapter.FACTORY)
+ *      .add(WrappedJsonAdapter.FACTORY)
  *      .build();
  * </code></pre>
  *
  * <b>DISCLAIMER: </b> The order of {@linkplain JsonAdapter added json adapters} maters, to ensure
- * {@linkplain UnwrapJsonAdapter UnwrapJsonAdapter's} correct behaviour it must be the
+ * {@linkplain WrappedJsonAdapter WrappedJsonAdapter's} correct behaviour it must be the
  * <strong>first</strong> custom adapter added to the {@linkplain Moshi.Builder}.
  */
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UnwrapJson {
+public @interface Wrapped {
   /** The path to the wrapped json value. */
   String[] value();
+
+  /** Allows to easily create a new instance of {@link Wrapped} annotation. */
+  final class Factory {
+    /** Will create a new instance of {@link Wrapped} with the specified JSON path. */
+    public static Wrapped create(final String... path) {
+      return new Wrapped() {
+        @Override public String[] value() {
+          return path;
+        }
+
+        @Override public Class<? extends Annotation> annotationType() {
+          return Wrapped.class;
+        }
+      };
+    }
+
+    private Factory() {
+      throw new AssertionError("No instances.");
+    }
+  }
 }

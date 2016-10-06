@@ -34,7 +34,7 @@ public final class LazyAdaptersRetrofitTest {
   @Rule public final MockWebServer server = new MockWebServer();
 
   private final Moshi moshi = new Moshi.Builder()
-      .add(UnwrapJsonAdapter.FACTORY)
+      .add(WrappedJsonAdapter.FACTORY)
       .add(FirstElementJsonAdapter.FACTORY)
       .build();
 
@@ -81,7 +81,7 @@ public final class LazyAdaptersRetrofitTest {
   private interface Service {
     /** Helps to test the unwrap adapter. */
     @GET("/")
-    @UnwrapJson({"one", "two"}) Call<String> unwrap();
+    @Wrapped({"one", "two"}) Call<String> unwrap();
 
     /** Helps to test the first element json adapter. */
     @GET("/")
@@ -89,7 +89,7 @@ public final class LazyAdaptersRetrofitTest {
 
     /** Helps to test the first element json adapter. */
     @GET("/")
-    @UnwrapJson({"one", "two"})
+    @Wrapped({"one", "two"})
     @FirstElement Call<String> unwrapFirstElement();
   }
 }

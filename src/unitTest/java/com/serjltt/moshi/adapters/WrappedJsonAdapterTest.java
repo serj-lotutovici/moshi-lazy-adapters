@@ -15,6 +15,7 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.pushtorefresh.private_constructor_checker.PrivateConstructorChecker;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
@@ -22,7 +23,6 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
 import com.squareup.moshi.Types;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
@@ -30,10 +30,10 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public final class UnwrapJsonAdapterTest {
+public final class WrappedJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(UnwrapJsonAdapter.FACTORY)
+      .add(WrappedJsonAdapter.FACTORY)
       .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .add(new ThrowingAdapter()) // We need to check that exceptions are propagated correctly.
       .build();
@@ -246,19 +246,19 @@ public final class UnwrapJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<String> adapter = moshi.adapter(String.class, Collections.singleton(
-        new UnwrapJson() {
-          @Override public String[] value() {
-            return new String[] {"1", "2"};
-          }
-
-          @Override public Class<? extends Annotation> annotationType() {
-            return UnwrapJson.class;
-          }
-        }));
+    JsonAdapter<String> adapter = moshi.adapter(String.class,
+        Collections.singleton(Wrapped.Factory.create("1", "2")));
 
     assertThat(adapter.toString())
         .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2])");
+  }
+
+  @Test public void checkWrappedFactoryConstructorThrows() throws Exception {
+    PrivateConstructorChecker
+        .forClass(Wrapped.Factory.class)
+        .expectedTypeOfException(AssertionError.class)
+        .expectedExceptionMessage("No instances.")
+        .check();
   }
 
   private static class Data1 {
@@ -267,16 +267,16 @@ public final class UnwrapJsonAdapterTest {
   }
 
   private static class Data2 {
-    @UnwrapJson({"1", "2"}) Data1 data;
+    @Wrapped({"1", "2"}) Data1 data;
   }
 
   private static class Data3 {
     @Custom
-    @UnwrapJson("1") String str;
+    @Wrapped("1") String str;
   }
 
   private static class Data4 {
-    @UnwrapJson("1") Throws th;
+    @Wrapped("1") Throws th;
   }
 
   private static class Throws {
