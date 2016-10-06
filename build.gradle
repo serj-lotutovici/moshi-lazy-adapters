@@ -38,6 +38,7 @@ dependencies {
 
   testCompile junit
   testCompile assertJ
+  testCompile privateConstructorChecker
   testCompile retrofit
   testCompile retrofitMoshiConverter
   testCompile mockWebServer

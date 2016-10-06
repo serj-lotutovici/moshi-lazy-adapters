@@ -19,14 +19,14 @@ the provided annotations/adapters add their respective factory to your `Moshi.Bu
 
 ```java
 Moshi moshi = new Moshi.Builder()
-  .add(UnwrapJsonAdapter.FACTORY);
+  .add(WrappedJsonAdapter.FACTORY);
   .build();
 ```
 
 The Lazy Adapters
 ---
 
-###UnwrapJsonAdapter
+###WrappedJsonAdapter
 
 
 Some apis enjoy wrapping the response object inside other json objects. This creates a lot of inconvenience
@@ -60,15 +60,15 @@ class FavoritePokemon {
 }
 ```
 
-A custom adapter would be another option, and `UnwrapJsonAdapter` is just the one. By annotating
-the response type with `@UnwrapJson` and providing the path to the desired list, the need for 
+A custom adapter would be another option, and `WrappedJsonAdapter` is just the one. By annotating
+the response type with `@Wrapped` and providing the path to the desired list, the need for 
 an additional object is dropped:
 
 ```java
 // This assumes that Retrofit is used to obtain the response.
 interface PokemonService {
   @GET("/pokemon/favorite")
-  @UnwrapJson({"favorite_pokemon", "pokemons"}) Call<List<String>> getFavorite();
+  @Wrapped({"favorite_pokemon", "pokemons"}) Call<List<String>> getFavorite();
 }
 ```
 
@@ -127,7 +127,7 @@ Full List of Adapters
 Moshi-Lazy-Adapters contains the following json adapters:
 * **SerializeNullsJsonAdapter** - Instructs moshi to serialize a value even if it's `null`;
 * **FirstElementJsonAdapter** - Instructs moshi to retrieve only the first element of a list;
-* **UnwrapJsonAdapter** - Unwraps a json object under the specified path;
+* **WrappedJsonAdapter** - Unwraps a json object under the specified path when parsing, and wraps it when serializing to json;
 * **FallbackOnNullJsonAdapter** - Instructs moshi to fallback to a default value in case the json field is `null`.
 
 Download

@@ -28,27 +28,27 @@ import java.util.Set;
 
 import static com.serjltt.moshi.adapters.Util.findAnnotation;
 
-/** {@linkplain JsonAdapter} that unwraps the type/field annotated with {@linkplain UnwrapJson}. */
-public final class UnwrapJsonAdapter<T> extends JsonAdapter<T> {
+/** {@linkplain JsonAdapter} that unwraps the type/field annotated with {@linkplain Wrapped}. */
+public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      Annotation annotation = findAnnotation(annotations, UnwrapJson.class);
+      Annotation annotation = findAnnotation(annotations, Wrapped.class);
       if (annotation == null) return null;
 
       // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
       Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
       reducedAnnotations.remove(annotation);
 
-      UnwrapJson unwrapJson = (UnwrapJson) annotation;
-      return new UnwrapJsonAdapter<>(moshi.adapter(type, reducedAnnotations), unwrapJson.value());
+      Wrapped wrapped = (Wrapped) annotation;
+      return new WrappedJsonAdapter<>(moshi.adapter(type, reducedAnnotations), wrapped.value());
     }
   };
 
   private final JsonAdapter<T> adapter;
   private final String[] path;
 
-  UnwrapJsonAdapter(JsonAdapter<T> adapter, String[] path) {
+  WrappedJsonAdapter(JsonAdapter<T> adapter, String[] path) {
     this.adapter = adapter;
     this.path = path;
   }

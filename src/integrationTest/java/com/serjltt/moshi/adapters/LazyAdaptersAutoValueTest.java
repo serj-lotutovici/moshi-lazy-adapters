@@ -17,6 +17,7 @@ package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import java.util.Collections;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /** Test all lazy adapters to work in integration with AutoValue extensions. */
 public class LazyAdaptersAutoValueTest {
   private final Moshi moshi = new Moshi.Builder()
-      .add(UnwrapJsonAdapter.FACTORY)
+      .add(WrappedJsonAdapter.FACTORY)
       .add(DataFactories.create())
       .build();
 
@@ -44,5 +45,21 @@ public class LazyAdaptersAutoValueTest {
     assertThat(fromJson.name()).isEqualTo("data_name");
     assertThat(fromJson.meta().value1).isEqualTo("value1");
     assertThat(fromJson.meta().value2).isEqualTo(2);
+  }
+
+  @Test
+  public void wrap() throws Exception {
+    JsonAdapter<Data> adapter = moshi.adapter(Data.class,
+        Collections.singleton(Wrapped.Factory.create("foo")));
+
+    Data.Meta meta = new Data.Meta();
+    meta.value1 = "value1";
+    meta.value2 = 2;
+    Data data = new AutoValue_Data("data_name", meta);
+
+    String toJson = adapter.toJson(data);
+    assertThat(toJson).isEqualTo(
+        "{\"foo\":{\"name\":\"data_name\","
+            + "\"meta\":{\"1\":{\"value1\":\"value1\",\"value2\":2}}}}");
   }
 }

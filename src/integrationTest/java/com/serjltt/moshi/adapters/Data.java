@@ -32,7 +32,7 @@ abstract class Data {
    * The name of the method will be taken as the first key, then the path provided with the
    * annotation.
    */
-  @UnwrapJson({"1"}) abstract Meta meta();
+  @Wrapped({"1"}) abstract Meta meta();
 
   static class Meta {
     String value1;
