@@ -5,6 +5,7 @@ Moshi Lazy Adapters
 [![Build Status][travis.svg]][travis]
 [![codecov][codecov.svg]][codecov]
 [![Latest Build][latestbuild.svg]][latestbuild]
+[![Android Arsenal][arsenal.svd]][arsenal]
 
 A collection of simple JsonAdapters for [Moshi][moshi].
  
@@ -173,5 +174,7 @@ License
  [codecov.svg]: https://codecov.io/gh/serj-lotutovici/moshi-lazy-adapters/branch/master/graph/badge.svg
  [latestbuild]: http://search.maven.org/#search%7Cga%7C1%7Ccom.serjltt.moshi
  [latestbuild.svg]: https://img.shields.io/maven-central/v/com.serjltt.moshi/moshi-lazy-adapters.svg
+ [arsenal.svd]: https://img.shields.io/badge/Android%20Arsenal-Moshi%20Lazy%20Adapters-orange.svg?style=flat
+ [arsenal]: http://android-arsenal.com/details/1/4481
  [sonatype]: https://oss.sonatype.org/content/repositories/snapshots/com/serjltt/moshi/
  [dl]: https://search.maven.org/remote_content?g=com.serjltt.moshi&a=moshi-lazy-adapters&v=LATEST
