@@ -122,14 +122,15 @@ See [FallbackOnNull's documentation](../master/src/main/java/com/serjltt/moshi/a
 for a full reference.
 
 
-Full List of Adapters
+List of provided Adapters
 ---
 
-Moshi-Lazy-Adapters contains the following json adapters:
 * **SerializeNullsJsonAdapter** - Instructs moshi to serialize a value even if it's `null`;
-* **FirstElementJsonAdapter** - Instructs moshi to retrieve only the first element of a list;
-* **WrappedJsonAdapter** - Unwraps a json object under the specified path when parsing, and wraps it when serializing to json;
+* **FirstElementJsonAdapter** - Instructs moshi to retrieve only the first element of a list.
 * **FallbackOnNullJsonAdapter** - Instructs moshi to fallback to a default value in case the json field is `null`.
+* **WrappedJsonAdapter** - Unwraps a json object under the specified path when parsing, and wraps it when serializing to json.
+* **SerializeOnlyJsonAdapter** - Instructs moshi to only serialize the annotated field, and ignore when de-serializing.
+* **DeserializeOnlyJsonAdapter** - Instructs moshi to only de-serialize the annotated field, and ignore when serializing.
 
 Download
 ---
