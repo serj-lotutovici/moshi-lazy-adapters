@@ -99,7 +99,7 @@
     <!--<module name="EmptyBlock"/>-->
     <module name="LeftCurly"/>
     <module name="NeedBraces">
-        <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE"/>
+      <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE"/>
     </module>
     <module name="RightCurly"/>
 
@@ -136,5 +136,37 @@
     <!--module name="FinalParameters"/-->
     <!--<module name="TodoComment"/>-->
     <module name="UpperEll"/>
+
+    <!-- Custom checks for JUnit's Assert usage.       -->
+    <!-- From https://gist.github.com/vanniktech/e8117fb245e804971a83288c1498c9d7 -->
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="import static org\.junit\.Assert\.assertEquals;"/>
+      <property name="message"
+          value="Don't use JUnits assertEquals, AssertJ is preferred: assertThat(foo).isEqualTo();"/>
+    </module>
+
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="import static org\.junit\.Assert\.assertNotEquals;"/>
+      <property name="message"
+          value="Don't use JUnits assertNotEquals, AssertJ is preferred: assertThat(foo).isNotEqualTo();"/>
+    </module>
+
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="import static org\.junit\.Assert\.assertSame;"/>
+      <property name="message"
+          value="Don't use JUnits assertSame, AssertJ is preferred: assertThat(foo).isSameAs();"/>
+    </module>
+
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="import static org\.junit\.Assert\.assertNull;"/>
+      <property name="message"
+          value="Don't use JUnits assertNull, AssertJ is preferred: assertThat(foo).isNull()"/>
+    </module>
+
+    <module name="RegexpSinglelineJava">
+      <property name="format" value="import static org\.junit\.Assert\.assertNotNull;"/>
+      <property name="message"
+          value="Don't use JUnits assertNotNull, AssertJ is preferred: assertThat(foo).isNotNull()"/>
+    </module>
   </module>
 </module>
