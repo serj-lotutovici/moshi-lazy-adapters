@@ -20,8 +20,10 @@ import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Indicates that the annotated type/field should be unwrapped by the {@linkplain
@@ -62,6 +64,7 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 public @interface Wrapped {
   /** The path to the wrapped json value. */
   String[] value();
