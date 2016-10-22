@@ -56,9 +56,13 @@ public final class SerializeNullsJsonAdapter<T> extends JsonAdapter<T> {
   }
 
   @Override public void toJson(JsonWriter writer, T value) throws IOException {
+    boolean oldSerializeNulls = writer.getSerializeNulls();
     writer.setSerializeNulls(true);
-    delegate.toJson(writer, value);
-    writer.setSerializeNulls(false);
+    try {
+      delegate.toJson(writer, value);
+    } finally {
+      writer.setSerializeNulls(oldSerializeNulls);
+    }
   }
 
   @Override public String toString() {
