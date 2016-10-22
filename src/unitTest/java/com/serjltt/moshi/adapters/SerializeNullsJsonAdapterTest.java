@@ -16,9 +16,11 @@
 package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+import okio.Buffer;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,8 +44,7 @@ public final class SerializeNullsJsonAdapterTest {
     assertThat(toJson).isEqualTo("{\"data\":null}");
   }
 
-  @Test
-  public void factoryMaintainsOtherAnnotations() throws Exception {
+  @Test public void factoryMaintainsOtherAnnotations() throws Exception {
     JsonAdapter<Data2> adapter = moshi.adapter(Data2.class);
 
     Data2 fromJson = adapter.fromJson("{\n"
@@ -58,6 +59,21 @@ public final class SerializeNullsJsonAdapterTest {
     data.data = null;
     toJson = adapter.toJson(data);
     assertThat(toJson).isEqualTo("{\"data\":null}");
+  }
+
+  @Test public void maintainsPreviousSerializationValue() throws Exception {
+    JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
+    Data1 data1 = new Data1();
+
+    JsonWriter writer1 = JsonWriter.of(new Buffer());
+    writer1.setSerializeNulls(true);
+    adapter.toJson(writer1, data1);
+    assertThat(writer1.getSerializeNulls()).isTrue();
+
+    JsonWriter writer2 = JsonWriter.of(new Buffer());
+    writer2.setSerializeNulls(false);
+    adapter.toJson(writer2, data1);
+    assertThat(writer2.getSerializeNulls()).isFalse();
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
