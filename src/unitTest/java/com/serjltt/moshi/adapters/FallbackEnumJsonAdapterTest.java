@@ -98,12 +98,12 @@ public final class FallbackEnumJsonAdapterTest {
   @FallbackEnum(name = "UNKNOWN") enum Roshambo {
     ROCK,
     PAPER,
-    @Json(name = "scr")SCISSORS,
+    @Json(name = "scr") SCISSORS,
     UNKNOWN
   }
 
   @FallbackEnum(name = "UNK") enum Value {
-    @SuppressWarnings("unused")UNKNOWN
+    @SuppressWarnings("unused") UNKNOWN
   }
 
   enum Regular {
