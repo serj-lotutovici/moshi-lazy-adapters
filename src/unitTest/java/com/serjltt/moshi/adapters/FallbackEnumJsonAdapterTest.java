@@ -20,6 +20,8 @@ import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.Moshi;
+import java.lang.annotation.Annotation;
+import java.util.Collections;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +83,16 @@ public final class FallbackEnumJsonAdapterTest {
       assertThat(expected).hasMessage(
           "Expected one of [ONE] but was TWO at path $");
     }
+  }
+
+  @Test public void factoryIgnoresUnsupportedTypes() throws Exception {
+    JsonAdapter<?> adapter1 = FallbackEnumJsonAdapter.FACTORY
+        .create(String.class, Collections.<Annotation>emptySet(), moshi);
+    assertThat(adapter1).isNull();
+
+    JsonAdapter<?> adapter2 = FallbackEnumJsonAdapter.FACTORY
+        .create(Roshambo.class, Collections.singleton(Wrapped.Factory.create("")), moshi);
+    assertThat(adapter2).isNull();
   }
 
   @FallbackEnum(name = "UNKNOWN") enum Roshambo {
