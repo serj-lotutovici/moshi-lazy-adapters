@@ -44,6 +44,7 @@ dependencies {
   testCompile mockWebServer
 
   // This is needed to test integration with auto-value-moshi
-  testCompileOnly autoValueMoshi
+  testCompileOnly autoValueMoshiAnnotations
+  testCompileOnly autoValueAnnotations
   testApt autoValueMoshi
 }
