@@ -15,6 +15,7 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.squareup.moshi.Json;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import okhttp3.ResponseBody;
@@ -55,6 +56,28 @@ public final class LazyAdaptersRetrofitTest {
         + "    \"two\": \"works!\"\n"
         + "  }\n"
         + "}", "works!");
+  }
+
+  @Test public void unwrapNestedJsonAdapter() throws Exception {
+    server.enqueue(new MockResponse().setBody("{\n"
+        + " \"one\": {\n"
+        + "  \"two\": {\n"
+        + "   \"item\": {\n"
+        + "    \"foo\": \"this\"\n"
+        + "   },\n"
+        + "   \"item2\": {\n"
+        + "    \"bar\": 1234\n"
+        + "   },\n"
+        + "   \"foobar\": 567\n"
+        + "  }\n"
+        + " }\n"
+        + "}"));
+
+    Response<Nested> response = service.unwrapNested().execute();
+
+    assertThat(response.body().foobar).isEqualTo(567);
+    assertThat(response.body().foo).isEqualTo("this");
+    assertThat(response.body().bar).isEqualTo(1234);
   }
 
   @Test public void wrapPostBody() throws Exception {
@@ -99,6 +122,9 @@ public final class LazyAdaptersRetrofitTest {
     @GET("/")
     @Wrapped({"one", "two"}) Call<String> unwrap();
 
+    @GET("/")
+    @Wrapped({"one", "two"}) Call<Nested> unwrapNested();
+
     @POST("/") Call<ResponseBody> wrappedPost(@Body @Wrapped({"1", "2"}) String value);
 
     /** Helps to test the first element json adapter. */
@@ -109,5 +135,11 @@ public final class LazyAdaptersRetrofitTest {
     @GET("/")
     @Wrapped({"one", "two"})
     @FirstElement Call<String> unwrapFirstElement();
+  }
+
+  static class Nested {
+    @Wrapped("foo") @Json(name = "item") String foo;
+    @Wrapped("bar") @Json(name = "item2") int bar;
+    int foobar;
   }
 }
