@@ -138,8 +138,8 @@ public final class LazyAdaptersRetrofitTest {
   }
 
   static class Nested {
-    @Wrapped("foo") @Json(name = "item") String foo;
-    @Wrapped("bar") @Json(name = "item2") int bar;
+    @Json(name = "item") @Wrapped("foo") String foo;
+    @Json(name = "item2") @Wrapped("bar") int bar;
     int foobar;
   }
 }
