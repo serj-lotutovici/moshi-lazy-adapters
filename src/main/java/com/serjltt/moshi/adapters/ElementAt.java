@@ -35,6 +35,10 @@ import java.lang.annotation.Target;
  *    {
  *      "some_field": "some_value",
  *      "other_field": "other_value"
+ *    },
+ *    {
+ *      "some_field": "some_value_2",
+ *      "other_field": "other_value_2"
  *    }
  *   ]
  * </pre>
@@ -64,7 +68,9 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface ElementAt {
   /**
-   * @return the index at which the element is located
+   * Represents the index location at which the element will be expected to be.
+   * If the size of the array will be less then the provided index,
+   * the companion adapter will return {@code null}.
    */
   int index();
 }

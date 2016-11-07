@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,24 +39,19 @@ public final class ElementAtJsonAdapter<T> extends JsonAdapter<T> {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
       Annotation annotation = findAnnotation(annotations, ElementAt.class);
-      if (annotation == null) return null;
-
-      // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
-      Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
-      reducedAnnotations.remove(annotation);
+      if (annotation == null || annotations.size() > 1) return null;
 
       ElementAt elementAt = (ElementAt) annotation;
-      return new ElementAtJsonAdapter<>(type, moshi, reducedAnnotations, elementAt.index());
+      return new ElementAtJsonAdapter<>(type, moshi, elementAt.index());
     }
   };
 
   private final JsonAdapter<List<T>> adapter;
   private final int index;
 
-  ElementAtJsonAdapter(Type type, Moshi moshi,
-    Set<? extends Annotation> reducedAnnotations, int index) {
+  ElementAtJsonAdapter(Type type, Moshi moshi, int index) {
     Type listType = Types.newParameterizedType(List.class, type);
-    adapter = moshi.adapter(listType, reducedAnnotations);
+    adapter = moshi.adapter(listType);
     this.index = index;
   }
 
