@@ -41,6 +41,7 @@ public final class LazyAdaptersRetrofitTest {
   private final Moshi moshi = new Moshi.Builder()
       .add(WrappedJsonAdapter.FACTORY)
       .add(FirstElementJsonAdapter.FACTORY)
+      .add(ElementAtJsonAdapter.FACTORY)
       .build();
 
   private final Retrofit retrofit = new Retrofit.Builder()
@@ -99,6 +100,14 @@ public final class LazyAdaptersRetrofitTest {
         + "]", "expected");
   }
 
+  @Test public void elementAtJsonAdapter() throws Exception {
+    assertResponse(service.elementAt(), "[\n"
+        + "  \"one\",\n"
+        + "  \"two\",\n"
+        + "  \"three\"\n"
+        + "]", "three");
+  }
+
   @Test public void unwrapFirstElement() throws Exception {
     assertResponse(service.unwrapFirstElement(), "{\n"
         + "  \"one\": {\n"
@@ -135,6 +144,9 @@ public final class LazyAdaptersRetrofitTest {
     @GET("/")
     @Wrapped({"one", "two"})
     @FirstElement Call<String> unwrapFirstElement();
+
+    @GET("/")
+    @ElementAt(index = 2) Call<String> elementAt();
   }
 
   static class Nested {
