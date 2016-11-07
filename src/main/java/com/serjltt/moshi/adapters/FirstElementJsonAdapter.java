@@ -16,15 +16,9 @@
 package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonReader;
-import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static com.serjltt.moshi.adapters.Util.hasAnnotation;
@@ -33,35 +27,18 @@ import static com.serjltt.moshi.adapters.Util.hasAnnotation;
  * {@linkplain JsonAdapter} that extracts the first element of an array of (a field) type annotated
  * with {@linkplain FirstElement}.
  */
-public final class FirstElementJsonAdapter<T> extends JsonAdapter<T> {
+public final class FirstElementJsonAdapter {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
       if (hasAnnotation(annotations, FirstElement.class) && annotations.size() == 1) {
-        return new FirstElementJsonAdapter<>(type, moshi);
+        return new ElementAtJsonAdapter<>(type, moshi, 0);
       }
       return null;
     }
   };
 
-  private final JsonAdapter<List<T>> adapter;
-
-  FirstElementJsonAdapter(Type type, Moshi moshi) {
-    Type listType = Types.newParameterizedType(List.class, type);
-    adapter = moshi.adapter(listType);
-  }
-
-  @Override public T fromJson(JsonReader reader) throws IOException {
-    List<T> fromJson = adapter.fromJson(reader);
-    if (fromJson != null && !fromJson.isEmpty()) return fromJson.get(0);
-    return null;
-  }
-
-  @Override public void toJson(JsonWriter writer, T value) throws IOException {
-    adapter.toJson(writer, Collections.singletonList(value));
-  }
-
-  @Override public String toString() {
-    return adapter + ".first()";
+  private FirstElementJsonAdapter() {
+    throw new AssertionError("No instances.");
   }
 }

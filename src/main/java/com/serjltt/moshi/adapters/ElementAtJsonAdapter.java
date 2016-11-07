@@ -46,26 +46,26 @@ public final class ElementAtJsonAdapter<T> extends JsonAdapter<T> {
     }
   };
 
-  private final JsonAdapter<List<T>> adapter;
+  private final JsonAdapter<List<T>> delegate;
   private final int index;
 
   ElementAtJsonAdapter(Type type, Moshi moshi, int index) {
     Type listType = Types.newParameterizedType(List.class, type);
-    adapter = moshi.adapter(listType);
+    delegate = moshi.adapter(listType);
     this.index = index;
   }
 
   @Override public T fromJson(JsonReader reader) throws IOException {
-    List<T> fromJson = adapter.fromJson(reader);
+    List<T> fromJson = delegate.fromJson(reader);
     if (fromJson != null && index < fromJson.size()) return fromJson.get(index);
     return null;
   }
 
   @Override public void toJson(JsonWriter writer, T value) throws IOException {
-    adapter.toJson(writer, Collections.singletonList(value));
+    delegate.toJson(writer, Collections.singletonList(value));
   }
 
   @Override public String toString() {
-    return adapter + ".elementAt(" + index + ")";
+    return delegate + ".elementAt(" + index + ")";
   }
 }
