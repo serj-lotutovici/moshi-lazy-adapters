@@ -15,6 +15,7 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.pushtorefresh.private_constructor_checker.PrivateConstructorChecker;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
@@ -132,7 +133,15 @@ public final class FirstElementJsonAdapterTest {
         }));
 
     assertThat(adapter.toString())
-        .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().first()");
+        .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().elementAt(0)");
+  }
+
+  @Test public void firstElementJsonAdapterDoesNotAllowInstances() throws Exception {
+    PrivateConstructorChecker
+        .forClass(FirstElementJsonAdapter.class)
+        .expectedTypeOfException(AssertionError.class)
+        .expectedExceptionMessage("No instances.")
+        .check();
   }
 
   private void assertNullReturn(String string) throws IOException {
