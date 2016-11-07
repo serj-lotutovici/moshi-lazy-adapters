@@ -46,8 +46,8 @@ public final class ElementAtJsonAdapter<T> extends JsonAdapter<T> {
       Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
       reducedAnnotations.remove(annotation);
 
-      ElementAt wrapped = (ElementAt) annotation;
-      return new ElementAtJsonAdapter<>(type, moshi, reducedAnnotations, wrapped.index());
+      ElementAt elementAt = (ElementAt) annotation;
+      return new ElementAtJsonAdapter<>(type, moshi, reducedAnnotations, elementAt.index());
     }
   };
 

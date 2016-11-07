@@ -63,5 +63,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface ElementAt {
+  /**
+   * @return the index at which the element is located
+   */
   int index();
 }
