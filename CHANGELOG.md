@@ -1,6 +1,12 @@
 Change Log
 ===
 
+1.2 *(08-11-2016)*
+---
+* New: `@FallbackEnum` annotation and it's respective adapter.
+* New: `@ElementAt` (similar to `@FirstElement` but more powerful) and it's respective adapter.
+* Fix: `@SerializeNulls` adapter now maintains previous writer setting.
+
 1.1 *(17-10-2016)*
 ---
 *  New: Rename `@UnwrapJson` to `@Wrapped` annotation and it's respective adapter to `WrappedJsonAdapter`.

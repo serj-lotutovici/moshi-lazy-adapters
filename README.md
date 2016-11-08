@@ -127,7 +127,9 @@ List of provided Adapters
 
 * **SerializeNullsJsonAdapter** - Instructs moshi to serialize a value even if it's `null`;
 * **FirstElementJsonAdapter** - Instructs moshi to retrieve only the first element of a list.
+* **ElementAtJsonAdapter** - Instructs moshi to retrieve an element for a specific position of a list.
 * **FallbackOnNullJsonAdapter** - Instructs moshi to fallback to a default value in case the json field is `null`.
+* **FallbackEnumJsonAdapter** - Instructs moshi to fallback to a default enum value if the parsed value can not be matched to an existing one.
 * **WrappedJsonAdapter** - Unwraps a json object under the specified path when parsing, and wraps it when serializing to json.
 * **SerializeOnlyJsonAdapter** - Instructs moshi to only serialize the annotated field, and ignore when de-serializing.
 * **DeserializeOnlyJsonAdapter** - Instructs moshi to only de-serialize the annotated field, and ignore when serializing.
