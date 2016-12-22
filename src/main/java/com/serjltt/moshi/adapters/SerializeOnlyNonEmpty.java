@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonQualifier;
@@ -24,15 +25,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that the annotated type/field should be serialized as {@code null} in case of a
- * empty/null value.
+ * Indicates that the annotated type/field should not be serialized in case of an
+ * empty value.
  *
- * <p>To leverage from {@linkplain SerializeNulls} the {@linkplain
- * SerializeNullsJsonAdapter#FACTORY} must be added to a {@linkplain Moshi Moshi instance}:
+ * <p>To leverage from {@linkplain SerializeOnlyNonEmpty} the {@linkplain
+ * SerializeOnlyNonEmptyJsonAdapter#FACTORY} must be added to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(SerializeNullsJsonAdapter.FACTORY)
+ *      .add(SerializeOnlyNonEmptyJsonAdapter.FACTORY)
  *      .build();
  * </code></pre>
  */
@@ -40,5 +41,5 @@ import java.lang.annotation.Target;
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-public @interface SerializeNulls {
+public @interface SerializeOnlyNonEmpty {
 }
