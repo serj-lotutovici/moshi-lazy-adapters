@@ -178,8 +178,8 @@ public final class WrappedJsonAdapterTest {
           + "  }\n"
           + "}");
       fail();
-    } catch (IOException e) {
-      assertThat(e).hasMessage("Json object could not be found at expected path [1, 2].");
+    } catch (JsonDataException e) {
+      assertThat(e).hasMessage("Wrapped Json expected at path: [1, 2]. Actual: $.data");
     }
   }
 
@@ -248,9 +248,13 @@ public final class WrappedJsonAdapterTest {
   @Test public void toStringReflectsInnerAdapter() throws Exception {
     JsonAdapter<String> adapter = moshi.adapter(String.class,
         Collections.singleton(Wrapped.Factory.create("1", "2")));
-
     assertThat(adapter.toString())
         .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2])");
+
+    JsonAdapter<String> failingAdapter = moshi.adapter(String.class,
+        Collections.singleton(Wrapped.Factory.create(true, "1", "2")));
+    assertThat(failingAdapter.toString())
+        .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2]).failOnNotFound()");
   }
 
   @Test public void checkWrappedFactoryConstructorThrows() throws Exception {
@@ -267,16 +271,16 @@ public final class WrappedJsonAdapterTest {
   }
 
   private static class Data2 {
-    @Wrapped({"1", "2"}) Data1 data;
+    @Wrapped(path = {"1", "2"}) Data1 data;
   }
 
   private static class Data3 {
     @Custom
-    @Wrapped("1") String str;
+    @Wrapped(path = "1") String str;
   }
 
   private static class Data4 {
-    @Wrapped("1") Throws th;
+    @Wrapped(path = "1") Throws th;
   }
 
   private static class Throws {

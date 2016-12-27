@@ -13,6 +13,7 @@ ext {
   retrofitMoshiConverter = 'com.squareup.retrofit2:converter-moshi:2.1.0'
   mockWebServer = 'com.squareup.okhttp3:mockwebserver:3.4.1'
   privateConstructorChecker = 'com.pushtorefresh.java-private-constructor-checker:checker:1.2.0'
+  rxJava2 = 'io.reactivex.rxjava2:rxjava:2.0.3'
 
   autoValueMoshi = 'com.ryanharter.auto.value:auto-value-moshi:0.4.2'
   autoValueMoshiAnnotations = 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.2'

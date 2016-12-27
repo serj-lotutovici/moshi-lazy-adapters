@@ -16,6 +16,7 @@
 package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -41,16 +42,19 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
       reducedAnnotations.remove(annotation);
 
       Wrapped wrapped = (Wrapped) annotation;
-      return new WrappedJsonAdapter<>(moshi.adapter(type, reducedAnnotations), wrapped.value());
+      JsonAdapter<Object> adapter = moshi.adapter(type, reducedAnnotations);
+      return new WrappedJsonAdapter<>(adapter, wrapped.path(), wrapped.failOnNotFound());
     }
   };
 
-  private final JsonAdapter<T> adapter;
+  private final JsonAdapter<T> delegate;
   private final String[] path;
+  private final boolean failOnNotFound;
 
-  WrappedJsonAdapter(JsonAdapter<T> adapter, String[] path) {
-    this.adapter = adapter;
+  WrappedJsonAdapter(JsonAdapter<T> delegate, String[] path, boolean failOnNotFound) {
+    this.delegate = delegate;
     this.path = path;
+    this.failOnNotFound = failOnNotFound;
   }
 
   @Override public T fromJson(JsonReader reader) throws IOException {
@@ -60,15 +64,16 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
     }
 
     // We start form the first element of the path.
-    return fromJson(adapter, reader, path, 0);
+    return fromJson(delegate, reader, path, 0, failOnNotFound);
   }
 
   @Override public void toJson(JsonWriter writer, T value) throws IOException {
-    toJson(adapter, writer, value, path, 0);
+    toJson(delegate, writer, value, path, 0);
   }
 
   @Override public String toString() {
-    return adapter + String.format(".wrappedIn(%s)", Arrays.asList(path));
+    return delegate + String.format(".wrappedIn(%s)", Arrays.asList(path))
+        + (failOnNotFound ? ".failOnNotFound()" : "");
   }
 
   /**
@@ -76,7 +81,7 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
    * provided {@code path}.
    */
   private static <T> T fromJson(JsonAdapter<T> adapter, JsonReader reader, String[] path,
-      int index) throws IOException {
+      int index, boolean failOnNotFound) throws IOException {
     if (index == path.length) {
       //noinspection unchecked This puts full responsibility on the caller.
       return adapter.fromJson(reader);
@@ -88,9 +93,17 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
         while (reader.hasNext()) {
           if (reader.nextName().equals(root)) {
             if (reader.peek() == JsonReader.Token.NULL) {
+              // Consumer expects a value, not a null.
+              if (failOnNotFound) {
+                throw new JsonDataException(String.format(
+                    "Wrapped Json expected at path: %s. Found null at %s",
+                    Arrays.asList(path), reader.getPath()
+                ));
+              }
+
               return reader.nextNull();
             }
-            return fromJson(adapter, reader, path, ++index);
+            return fromJson(adapter, reader, path, ++index, failOnNotFound);
           } else {
             reader.skipValue();
           }
@@ -110,9 +123,9 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
         // End object, so that other adapters (if any) can proceed.
         reader.endObject();
       }
-      throw new IOException(String.format(
-          "Json object could not be found at expected path %s.",
-          Arrays.asList(path)));
+      throw new JsonDataException(String.format(
+          "Wrapped Json expected at path: %s. Actual: %s",
+          Arrays.asList(path), reader.getPath()));
     }
   }
 

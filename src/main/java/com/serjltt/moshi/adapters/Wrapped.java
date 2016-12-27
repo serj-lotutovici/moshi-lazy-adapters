@@ -64,22 +64,37 @@ import java.lang.annotation.Target;
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface Wrapped {
   /** The path to the wrapped json value. */
-  String[] value();
+  String[] path();
+
+  /**
+   * Indicates if the adapter should fail if the json object was not found at the indicated path.
+   * Default {@code false}.
+   */
+  boolean failOnNotFound() default false;
 
   /** Allows to easily create a new instance of {@link Wrapped} annotation. */
   final class Factory {
-    /** Will create a new instance of {@link Wrapped} with the specified JSON path. */
+    /** Create a new instance of {@link Wrapped} with the specified JSON path. */
     public static Wrapped create(final String... path) {
+      return create(false, path);
+    }
+
+    /** Create a new instance of {@link Wrapped} with the specified JSON path. */
+    public static Wrapped create(final boolean failOnNotFound, final String... path) {
       return new Wrapped() {
-        @Override public String[] value() {
+        @Override public Class<? extends Annotation> annotationType() {
+          return Wrapped.class;
+        }
+
+        @Override public String[] path() {
           return path;
         }
 
-        @Override public Class<? extends Annotation> annotationType() {
-          return Wrapped.class;
+        @Override public boolean failOnNotFound() {
+          return failOnNotFound;
         }
       };
     }
