@@ -42,6 +42,7 @@ dependencies {
   testCompile retrofit
   testCompile retrofitMoshiConverter
   testCompile mockWebServer
+  testCompile rxJava2
 
   // This is needed to test integration with auto-value-moshi
   testCompileOnly autoValueMoshiAnnotations
