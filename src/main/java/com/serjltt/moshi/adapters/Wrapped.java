@@ -49,7 +49,7 @@ import java.lang.annotation.Target;
  * value {@code "OK"}.
  *
  * <p>To leverage from {@linkplain Wrapped} the {@linkplain WrappedJsonAdapter#FACTORY} must be
- * added  to a {@linkplain Moshi Moshi instance}:
+ * added to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
