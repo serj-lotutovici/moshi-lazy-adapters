@@ -271,16 +271,16 @@ public final class WrappedJsonAdapterTest {
   }
 
   private static class Data2 {
-    @Wrapped(value = {"1", "2"}) Data1 data;
+    @Wrapped({"1", "2"}) Data1 data;
   }
 
   private static class Data3 {
     @Custom
-    @Wrapped(value = "1") String str;
+    @Wrapped("1") String str;
   }
 
   private static class Data4 {
-    @Wrapped(value = "1") Throws th;
+    @Wrapped("1") Throws th;
   }
 
   private static class Throws {
