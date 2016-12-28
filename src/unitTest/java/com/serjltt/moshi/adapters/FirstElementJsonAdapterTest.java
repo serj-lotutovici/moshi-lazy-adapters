@@ -55,13 +55,13 @@ public final class FirstElementJsonAdapterTest {
     assertThat(toJson).isEqualTo("{\"obj\":[\"one\"]}");
   }
 
-  @Test public void fromJsonOnEmptyArrayRetrunsNull() throws Exception {
+  @Test public void fromJsonOnEmptyArrayReturnsNull() throws Exception {
     assertNullReturn("{\n"
         + "  \"obj\": []\n"
         + "}");
   }
 
-  @Test public void fromJsonOnNullArrayRetrunsNull() throws Exception {
+  @Test public void fromJsonOnNullArrayReturnsNull() throws Exception {
     assertNullReturn("{\n"
         + "  \"obj\": null\n"
         + "}");
