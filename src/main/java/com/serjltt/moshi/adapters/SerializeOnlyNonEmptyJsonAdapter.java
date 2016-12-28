@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -59,39 +60,14 @@ public final class SerializeOnlyNonEmptyJsonAdapter<T> extends JsonAdapter<T> {
   }
 
   private boolean isNotEmpty(final T value) {
-    if (value instanceof Object[]) {
-      Object[] array = (Object[]) value;
-      return array.length > 0;
-    } else if (value instanceof Collection) {
+    if (value instanceof Collection) {
       Collection collection = (Collection) value;
       return collection.size() > 0;
     } else if (value instanceof Map) {
       Map map = (Map) value;
       return map.size() > 0;
-    } else if (value instanceof byte[]) {
-      byte[] array = (byte[]) value;
-      return array.length > 0;
-    } else if (value instanceof char[]) {
-      char[] array = (char[]) value;
-      return array.length > 0;
-    } else if (value instanceof short[]) {
-      short[] array = (short[]) value;
-      return array.length > 0;
-    } else if (value instanceof int[]) {
-      int[] array = (int[]) value;
-      return array.length > 0;
-    } else if (value instanceof long[]) {
-      long[] array = (long[]) value;
-      return array.length > 0;
-    } else if (value instanceof float[]) {
-      float[] array = (float[]) value;
-      return array.length > 0;
-    } else if (value instanceof double[]) {
-      double[] array = (double[]) value;
-      return array.length > 0;
-    } else if (value instanceof boolean[]) {
-      boolean[] array = (boolean[]) value;
-      return array.length > 0;
+    } else if (value != null) {
+      return Array.getLength(value) > 0;
     }
 
     return false;
