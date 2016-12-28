@@ -124,7 +124,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
         }));
 
     assertThat(adapter.toString())
-        .isEqualTo("JsonAdapter(String[]).serializeOnlyNonEmpty()");
+        .endsWith(".serializeOnlyNonEmpty()");
   }
 
   static class Data1 {
