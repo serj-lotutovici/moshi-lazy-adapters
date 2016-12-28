@@ -49,7 +49,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.customArray = new CustomType[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.customArray = new CustomType[] { new CustomType("blub") };
+    fromJson.customArray = new CustomType[] {new CustomType("blub")};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"customArray\":[{\"data\":\"blub\"}]}");
   }
 
@@ -64,7 +64,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.byteArray = new byte[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.byteArray = new byte[] { 5 };
+    fromJson.byteArray = new byte[] {5};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"byteArray\":[5]}");
   }
 
@@ -79,7 +79,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.charArray = new char[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.charArray = new char[] { 65 };
+    fromJson.charArray = new char[] {65};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"charArray\":[\"A\"]}");
   }
 
@@ -94,7 +94,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.shortArray = new short[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.shortArray = new short[] { 5 };
+    fromJson.shortArray = new short[] {5};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"shortArray\":[5]}");
   }
 
@@ -109,7 +109,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.intArray = new int[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.intArray = new int[] { 5 };
+    fromJson.intArray = new int[] {5};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"intArray\":[5]}");
   }
 
@@ -124,7 +124,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.longArray = new long[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.longArray = new long[] { 5L };
+    fromJson.longArray = new long[] {5L};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"longArray\":[5]}");
   }
 
@@ -139,7 +139,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.floatArray = new float[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.floatArray = new float[] { 5f };
+    fromJson.floatArray = new float[] {5f};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"floatArray\":[5.0]}");
   }
 
@@ -154,7 +154,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.doubleArray = new double[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.doubleArray = new double[] { 5f };
+    fromJson.doubleArray = new double[] {5f};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"doubleArray\":[5.0]}");
   }
 
@@ -169,7 +169,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.booleanArray = new boolean[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.booleanArray = new boolean[] { false };
+    fromJson.booleanArray = new boolean[] {false};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"booleanArray\":[false]}");
   }
 
@@ -184,7 +184,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.stringArray = new String[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.stringArray = new String[] { "blub" };
+    fromJson.stringArray = new String[] {"blub"};
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"stringArray\":[\"blub\"]}");
   }
 
