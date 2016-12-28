@@ -68,6 +68,30 @@ public final class SerializeOnlyNonEmptyJsonAdapter<T> extends JsonAdapter<T> {
     } else if (value instanceof Map) {
       Map map = (Map) value;
       return map.size() > 0;
+    } else if (value instanceof byte[]) {
+      byte[] array = (byte[]) value;
+      return array.length > 0;
+    } else if (value instanceof char[]) {
+      char[] array = (char[]) value;
+      return array.length > 0;
+    } else if (value instanceof short[]) {
+      short[] array = (short[]) value;
+      return array.length > 0;
+    } else if (value instanceof int[]) {
+      int[] array = (int[]) value;
+      return array.length > 0;
+    } else if (value instanceof long[]) {
+      long[] array = (long[]) value;
+      return array.length > 0;
+    } else if (value instanceof float[]) {
+      float[] array = (float[]) value;
+      return array.length > 0;
+    } else if (value instanceof double[]) {
+      double[] array = (double[]) value;
+      return array.length > 0;
+    } else if (value instanceof boolean[]) {
+      boolean[] array = (boolean[]) value;
+      return array.length > 0;
     }
 
     return false;
