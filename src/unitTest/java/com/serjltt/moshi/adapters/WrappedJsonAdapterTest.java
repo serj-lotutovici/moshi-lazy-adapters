@@ -249,12 +249,12 @@ public final class WrappedJsonAdapterTest {
     JsonAdapter<String> adapter = moshi.adapter(String.class,
         Collections.singleton(Wrapped.Factory.create("1", "2")));
     assertThat(adapter.toString())
-        .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2])");
+        .isEqualTo("JsonAdapter(String).nullSafe().wrapped([1, 2])");
 
     JsonAdapter<String> failingAdapter = moshi.adapter(String.class,
         Collections.singleton(Wrapped.Factory.create(true, "1", "2")));
     assertThat(failingAdapter.toString())
-        .isEqualTo("JsonAdapter(String).nullSafe().wrappedIn([1, 2]).failOnNotFound()");
+        .isEqualTo("JsonAdapter(String).nullSafe().wrapped([1, 2]).failOnNotFound()");
   }
 
   @Test public void checkWrappedFactoryConstructorThrows() throws Exception {
@@ -271,16 +271,16 @@ public final class WrappedJsonAdapterTest {
   }
 
   private static class Data2 {
-    @Wrapped(path = {"1", "2"}) Data1 data;
+    @Wrapped(value = {"1", "2"}) Data1 data;
   }
 
   private static class Data3 {
     @Custom
-    @Wrapped(path = "1") String str;
+    @Wrapped(value = "1") String str;
   }
 
   private static class Data4 {
-    @Wrapped(path = "1") Throws th;
+    @Wrapped(value = "1") Throws th;
   }
 
   private static class Throws {

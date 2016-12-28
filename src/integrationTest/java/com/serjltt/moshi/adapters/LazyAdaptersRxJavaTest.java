@@ -3,13 +3,13 @@ package com.serjltt.moshi.adapters;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.Moshi;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.observers.BaseTestConsumer;
 import io.reactivex.observers.TestObserver;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -41,24 +41,25 @@ public final class LazyAdaptersRxJavaTest {
   }
 
   @Parameterized.Parameters
-  public static Collection<TestObserver<?>> testData() {
-    return Arrays.asList(new TestObserver<?>[] {
+  public static BaseTestConsumer[] testData() {
+    return new BaseTestConsumer[] {
         Single.fromCallable(failingCallable()).test(),
         Observable.fromCallable(failingCallable()).test(),
-        Maybe.fromCallable(failingCallable()).test()
-    });
+        Maybe.fromCallable(failingCallable()).test(),
+        Flowable.fromCallable(failingCallable()).test()
+    };
   }
 
-  private final TestObserver<?> testObserver;
+  private final BaseTestConsumer testConsumer;
 
-  public LazyAdaptersRxJavaTest(TestObserver<?> testObserver) {
-    this.testObserver = testObserver;
+  public LazyAdaptersRxJavaTest(BaseTestConsumer testConsumer) {
+    this.testConsumer = testConsumer;
   }
 
   @Test public void reactiveTypeYieldsAppropriateError() throws Exception {
-    testObserver
-        .assertError(JsonDataException.class)
-        .assertErrorMessage(
+    //noinspection unchecked
+    testConsumer
+        .assertFailureAndMessage(JsonDataException.class,
             "Wrapped Json expected at path: [one, two, three]. Found null at $.one.two");
   }
 }

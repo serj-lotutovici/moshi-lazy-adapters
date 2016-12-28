@@ -43,7 +43,7 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
 
       Wrapped wrapped = (Wrapped) annotation;
       JsonAdapter<Object> adapter = moshi.adapter(type, reducedAnnotations);
-      return new WrappedJsonAdapter<>(adapter, wrapped.path(), wrapped.failOnNotFound());
+      return new WrappedJsonAdapter<>(adapter, wrapped.value(), wrapped.failOnNotFound());
     }
   };
 
@@ -72,7 +72,7 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
   }
 
   @Override public String toString() {
-    return delegate + String.format(".wrappedIn(%s)", Arrays.asList(path))
+    return delegate + String.format(".wrapped(%s)", Arrays.asList(path))
         + (failOnNotFound ? ".failOnNotFound()" : "");
   }
 

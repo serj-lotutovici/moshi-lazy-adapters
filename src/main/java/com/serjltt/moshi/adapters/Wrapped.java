@@ -67,10 +67,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface Wrapped {
   /** The path to the wrapped json value. */
-  String[] path();
+  String[] value();
 
   /**
-   * Indicates if the adapter should fail if the json object was not found at the indicated path.
+   * Indicates if the adapter should fail when the json object was not found at the indicated path.
    * Default {@code false}.
    */
   boolean failOnNotFound() default false;
@@ -89,7 +89,7 @@ public @interface Wrapped {
           return Wrapped.class;
         }
 
-        @Override public String[] path() {
+        @Override public String[] value() {
           return path;
         }
 
