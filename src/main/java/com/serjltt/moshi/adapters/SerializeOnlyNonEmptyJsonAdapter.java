@@ -28,7 +28,8 @@ public final class SerializeOnlyNonEmptyJsonAdapter<T> extends JsonAdapter<T> {
 
       Class<?> rawType = Types.getRawType(type);
 
-      if (rawType.isArray() || Collection.class.isAssignableFrom(rawType) || Map.class.isAssignableFrom(rawType)) {
+      if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)
+          || Map.class.isAssignableFrom(rawType)) {
         // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
         Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
         reducedAnnotations.remove(annotation);
