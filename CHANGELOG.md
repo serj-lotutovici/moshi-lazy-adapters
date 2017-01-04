@@ -1,6 +1,15 @@
 Change Log
 ===
 
+1.3 *(04-01-2016)*
+* New: Added `SerializeOnlyNonEmpty` for all collections and arrays.
+* New: Allow `WrappedJsonAdapter` to fail on un-found value.
+* New: Upgrade to Moshi 1.31.
+
+   ```
+   compile 'com.squareup.moshi:moshi:1.3.0'
+   ```
+
 1.2 *(08-11-2016)*
 ---
 * New: `@FallbackEnum` annotation and it's respective adapter.
