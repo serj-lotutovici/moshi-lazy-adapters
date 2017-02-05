@@ -97,32 +97,64 @@ public final class WrappedJsonAdapterTest {
         + "]");
   }
 
-  @Test public void nullSafe() throws Exception {
+  @Test public void failOnNotFound() throws Exception {
     JsonAdapter<Data2> adapter = moshi.adapter(Data2.class);
 
-    Data2 fromJson = adapter.fromJson("{\n"
-        + "  \"data\": {\n"
-        + "    \"1\": {\n"
-        + "      \"2\": null\n"
-        + "    }\n"
-        + "  }\n"
-        + "}");
-    assertThat(fromJson.data).isNull();
-
-    String toJson = adapter.toJson(fromJson);
-    assertThat(toJson).isEqualTo("{\"data\":{\"1\":{\"2\":null}}}");
+    try {
+      adapter.fromJson("{\n"
+          + "  \"data\": {\n"
+          + "    \"1\": {\n"
+          + "      \"2\": null\n"
+          + "    }\n"
+          + "  }\n"
+          + "}");
+      fail();
+    } catch (JsonDataException ex) {
+      assertThat(ex).hasMessage(
+          "Wrapped Json expected at path: [1, 2]. Found null at $.data.1.2");
+    }
   }
 
-  @Test public void nullSafe2() throws Exception {
+  @Test public void failOnNotFound2() throws Exception {
     JsonAdapter<Data2> adapter = moshi.adapter(Data2.class);
 
-    Data2 fromJson = adapter.fromJson("{\n"
-        + "  \"data\": null\n"
-        + "}");
-    assertThat(fromJson.data).isNull();
+    try {
+      adapter.fromJson("{\n"
+          + "  \"data\": {\n"
+          + "    \"1\": null\n"
+          + "  }\n"
+          + "}");
+      fail();
+    } catch (JsonDataException ex) {
+      assertThat(ex).hasMessage(
+          "Wrapped Json expected at path: [1, 2]. Found null at $.data.1");
+    }
+  }
 
-    // Here we can't expect {"data":null}, since we don't know on which end the value was null.
-    String toJson = adapter.toJson(fromJson);
+  @Test public void failOnNotFoundFalse() throws Exception {
+    JsonAdapter<String> adapter = moshi.adapter(String.class,
+        Collections.singleton(Wrapped.Factory.create(false, "one")));
+
+    String fromJson = adapter.fromJson("{\"one\":null}");
+    assertThat(fromJson).isEqualTo(null);
+  }
+
+  @Test public void notNullSafe() throws Exception {
+    JsonAdapter<Data2> adapter = moshi.adapter(Data2.class);
+
+    try {
+      adapter.fromJson("{\n"
+          + "  \"data\": null\n"
+          + "}");
+      fail();
+    } catch (JsonDataException expected) {
+    }
+
+    Data2 data2 = new Data2();
+    String toJson = adapter.toJson(data2);
+    assertThat(toJson).isEqualTo("{}");
+
+    toJson = adapter.serializeNulls().toJson(data2);
     assertThat(toJson).isEqualTo("{\"data\":{\"1\":{\"2\":null}}}");
   }
 
@@ -249,12 +281,27 @@ public final class WrappedJsonAdapterTest {
     JsonAdapter<String> adapter = moshi.adapter(String.class,
         Collections.singleton(Wrapped.Factory.create("1", "2")));
     assertThat(adapter.toString())
-        .isEqualTo("JsonAdapter(String).nullSafe().wrapped([1, 2])");
+        .isEqualTo("JsonAdapter(String).nullSafe().wrapped([1, 2]).failOnNotFound()");
 
     JsonAdapter<String> failingAdapter = moshi.adapter(String.class,
-        Collections.singleton(Wrapped.Factory.create(true, "1", "2")));
+        Collections.singleton(Wrapped.Factory.create(false, "1", "2")));
     assertThat(failingAdapter.toString())
-        .isEqualTo("JsonAdapter(String).nullSafe().wrapped([1, 2]).failOnNotFound()");
+        .isEqualTo("JsonAdapter(String).nullSafe().wrapped([1, 2])");
+  }
+
+  @Test
+  public void wrappedFactoryRespectsEquals() throws Exception {
+    Wrapped wrapped1 = Wrapped.Factory.create("one", "two", "three");
+    Wrapped wrapped2 = Wrapped.Factory.create("one", "two", "three");
+    Wrapped wrapped3 = Wrapped.Factory.create("one", "two", "four");
+
+    assertThat(wrapped1).isEqualTo(wrapped2);
+    assertThat(wrapped1.hashCode()).isEqualTo(wrapped2.hashCode());
+    assertThat(wrapped1.toString()).isEqualTo(wrapped2.toString());
+
+    assertThat(wrapped1).isNotEqualTo(wrapped3);
+    assertThat(wrapped1.hashCode()).isNotEqualTo(wrapped3.hashCode());
+    assertThat(wrapped1.toString()).isNotEqualTo(wrapped3.toString());
   }
 
   @Test public void checkWrappedFactoryConstructorThrows() throws Exception {
@@ -271,16 +318,16 @@ public final class WrappedJsonAdapterTest {
   }
 
   private static class Data2 {
-    @Wrapped({"1", "2"}) Data1 data;
+    @Wrapped(path = {"1", "2"}) Data1 data;
   }
 
   private static class Data3 {
     @Custom
-    @Wrapped("1") String str;
+    @Wrapped(path = "1") String str;
   }
 
   private static class Data4 {
-    @Wrapped("1") Throws th;
+    @Wrapped(path = "1") Throws th;
   }
 
   private static class Throws {

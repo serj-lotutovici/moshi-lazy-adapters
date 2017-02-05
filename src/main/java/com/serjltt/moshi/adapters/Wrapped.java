@@ -24,6 +24,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 
 /**
  * Indicates that the annotated type/field should be unwrapped by the {@linkplain
@@ -66,20 +67,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface Wrapped {
-  /** The path to the wrapped json value. */
-  String[] value();
+  /** The path to the wrapped json path. */
+  String[] path();
 
   /**
    * Indicates if the adapter should fail when the json object was not found at the indicated path.
-   * Default {@code false}.
+   * Default {@code true}.
    */
-  boolean failOnNotFound() default false;
+  boolean failOnNotFound() default true;
 
   /** Allows to easily create a new instance of {@link Wrapped} annotation. */
   final class Factory {
     /** Create a new instance of {@link Wrapped} with the specified JSON path. */
     public static Wrapped create(final String... path) {
-      return create(false, path);
+      return create(true, path);
     }
 
     /** Create a new instance of {@link Wrapped} with the specified JSON path. */
@@ -89,12 +90,34 @@ public @interface Wrapped {
           return Wrapped.class;
         }
 
-        @Override public String[] value() {
+        @Override public String[] path() {
           return path;
         }
 
         @Override public boolean failOnNotFound() {
           return failOnNotFound;
+        }
+
+        @Override public int hashCode() {
+          int result = Arrays.hashCode(path);
+          result = 43 * result + (failOnNotFound ? 1 : 0);
+          return result;
+        }
+
+        @Override public boolean equals(Object obj) {
+          if (this == obj) return true;
+          if (obj == null || getClass() != obj.getClass()) return false;
+
+          Wrapped wrapped = (Wrapped) obj;
+          return Arrays.equals(path, wrapped.path())
+              && failOnNotFound == wrapped.failOnNotFound();
+        }
+
+        @Override public String toString() {
+          return "Wrapped("
+              + "path=" + Arrays.asList(path)
+              + ", failOnNotFound=" + failOnNotFound
+              + ")";
         }
       };
     }
