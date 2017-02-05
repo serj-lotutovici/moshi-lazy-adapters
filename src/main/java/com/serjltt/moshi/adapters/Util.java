@@ -16,30 +16,36 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.squareup.moshi.JsonQualifier;
 import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 final class Util {
-  public static Annotation findAnnotation(Set<? extends Annotation> annotations,
-      Class<? extends Annotation> annotationClass) {
-    if (annotations.isEmpty()) return null; // Save an iterator in the common case.
+  /**
+   * Checks if {@code annotations} contains {@code jsonQualifier}.
+   * Returns a pair containing the subset of {@code annotations} without {@code jsonQualifier}
+   * and the {@code jsonQualified} instance, or null if {@code annotations} does not contain
+   * {@code jsonQualifier}.
+   */
+  public static <A extends Annotation> Pair<A, Set<Annotation>> nextAnnotations(
+      Set<? extends Annotation> annotations, Class<A> jsonQualifier) {
+    if (!jsonQualifier.isAnnotationPresent(JsonQualifier.class)) {
+      throw new IllegalArgumentException(jsonQualifier + " is not a JsonQualifier.");
+    }
+    if (annotations.isEmpty()) {
+      return null;
+    }
     for (Annotation annotation : annotations) {
-      if (annotation.annotationType() == annotationClass) {
-        return annotation;
+      if (jsonQualifier.equals(annotation.annotationType())) {
+        Set<? extends Annotation> delegateAnnotations = new LinkedHashSet<>(annotations);
+        delegateAnnotations.remove(annotation);
+        //noinspection unchecked Protected by the if statment.
+        return new Pair<>((A) annotation, Collections.unmodifiableSet(delegateAnnotations));
       }
     }
     return null;
-  }
-
-  public static boolean hasAnnotation(Set<? extends Annotation> annotations,
-      Class<? extends Annotation> annotationClass) {
-    if (annotations.isEmpty()) return false; // Save an iterator in the common case.
-    for (Annotation annotation : annotations) {
-      if (annotation.annotationType() == annotationClass) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private Util() {

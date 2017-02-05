@@ -24,26 +24,21 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.serjltt.moshi.adapters.Util.findAnnotation;
+import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /** {@linkplain JsonAdapter} that unwraps the type/field annotated with {@linkplain Wrapped}. */
 public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      Annotation annotation = findAnnotation(annotations, Wrapped.class);
-      if (annotation == null) return null;
+      Pair<Wrapped, Set<Annotation>> nextAnnotations = nextAnnotations(annotations, Wrapped.class);
+      if (nextAnnotations == null) return null;
 
-      // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
-      Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
-      reducedAnnotations.remove(annotation);
-
-      Wrapped wrapped = (Wrapped) annotation;
-      JsonAdapter<Object> adapter = moshi.adapter(type, reducedAnnotations);
-      return new WrappedJsonAdapter<>(adapter, wrapped.value(), wrapped.failOnNotFound());
+      JsonAdapter<Object> adapter = moshi.adapter(type, nextAnnotations.second);
+      return new WrappedJsonAdapter<>(adapter, nextAnnotations.first.value(),
+          nextAnnotations.first.failOnNotFound());
     }
   };
 

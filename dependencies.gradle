@@ -4,7 +4,7 @@ ext {
   ci = 'true'.equals(System.getenv('CI'))
 
   /* Dependencies */
-  moshi = 'com.squareup.moshi:moshi:1.3.1'
+  moshi = 'com.squareup.moshi:moshi:1.4.0'
 
   /* Testing */
   junit = 'junit:junit:4.12'

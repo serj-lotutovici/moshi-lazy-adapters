@@ -19,13 +19,11 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.LinkedHashSet;
 import java.util.Set;
-
-import static com.serjltt.moshi.adapters.Util.findAnnotation;
 
 /**
  * {@linkplain JsonAdapter} that will serialize {@code T} even if the passed value is {@code null}.
@@ -34,14 +32,11 @@ public final class SerializeNullsJsonAdapter<T> extends JsonAdapter<T> {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      Annotation annotation = findAnnotation(annotations, SerializeNulls.class);
-      if (annotation == null) return null;
+      Set<? extends Annotation> nextAnnotations =
+          Types.nextAnnotations(annotations, SerializeNulls.class);
+      if (nextAnnotations == null) return null;
 
-      // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
-      Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
-      reducedAnnotations.remove(annotation);
-
-      return new SerializeNullsJsonAdapter<>(moshi.adapter(type, reducedAnnotations));
+      return new SerializeNullsJsonAdapter<>(moshi.adapter(type, nextAnnotations));
     }
   };
 
