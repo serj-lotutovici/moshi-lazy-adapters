@@ -10,11 +10,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static com.serjltt.moshi.adapters.Util.findAnnotation;
 
 /**
  * {@linkplain JsonAdapter} that will not serialize {@code T} when the passed value is empty.
@@ -23,18 +20,15 @@ public final class SerializeOnlyNonEmptyJsonAdapter<T> extends JsonAdapter<T> {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      Annotation annotation = findAnnotation(annotations, SerializeOnlyNonEmpty.class);
-      if (annotation == null) return null;
+      Set<? extends Annotation> nextAnnotations =
+          Types.nextAnnotations(annotations, SerializeOnlyNonEmpty.class);
+      if (nextAnnotations == null) return null;
 
       Class<?> rawType = Types.getRawType(type);
 
       if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)
           || Map.class.isAssignableFrom(rawType)) {
-        // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
-        Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
-        reducedAnnotations.remove(annotation);
-
-        return new SerializeOnlyNonEmptyJsonAdapter<>(moshi.adapter(type, reducedAnnotations));
+        return new SerializeOnlyNonEmptyJsonAdapter<>(moshi.adapter(type, nextAnnotations));
       }
 
       return null;

@@ -17,11 +17,10 @@ package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
-
-import static com.serjltt.moshi.adapters.Util.hasAnnotation;
 
 /**
  * {@linkplain JsonAdapter} that extracts the first element of an array of (a field) type annotated
@@ -31,10 +30,11 @@ public final class FirstElementJsonAdapter {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      if (hasAnnotation(annotations, FirstElement.class) && annotations.size() == 1) {
-        return new ElementAtJsonAdapter<>(type, moshi, 0);
-      }
-      return null;
+      Set<? extends Annotation> nextAnnotations =
+          Types.nextAnnotations(annotations, FirstElement.class);
+      if (nextAnnotations == null || !nextAnnotations.isEmpty()) return null;
+
+      return new ElementAtJsonAdapter<>(type, moshi, 0);
     }
   };
 

@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.serjltt.moshi.adapters.Util.findAnnotation;
+import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /**
  * {@linkplain JsonAdapter} that extracts the element at the given index
@@ -38,11 +38,11 @@ public final class ElementAtJsonAdapter<T> extends JsonAdapter<T> {
   public static final Factory FACTORY = new Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      Annotation annotation = findAnnotation(annotations, ElementAt.class);
-      if (annotation == null || annotations.size() > 1) return null;
+      Pair<ElementAt, Set<Annotation>> nextAnnotations =
+          nextAnnotations(annotations, ElementAt.class);
+      if (nextAnnotations == null || !nextAnnotations.second.isEmpty()) return null;
 
-      ElementAt elementAt = (ElementAt) annotation;
-      return new ElementAtJsonAdapter<>(type, moshi, elementAt.index());
+      return new ElementAtJsonAdapter<>(type, moshi, nextAnnotations.first.index());
     }
   };
 

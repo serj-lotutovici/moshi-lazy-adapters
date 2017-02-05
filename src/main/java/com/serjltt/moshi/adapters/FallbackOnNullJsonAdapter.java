@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.serjltt.moshi.adapters.Util.findAnnotation;
+import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /**
  * {@linkplain JsonAdapter} that fallbacks to a default value of a primitive field annotated with
@@ -51,20 +51,17 @@ public final class FallbackOnNullJsonAdapter<T> extends JsonAdapter<T> {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
-      Annotation annotation = findAnnotation(annotations, FallbackOnNull.class);
-      if (annotation == null) return null;
+      Pair<FallbackOnNull, Set<Annotation>> nextAnnotations =
+          nextAnnotations(annotations, FallbackOnNull.class);
+      if (nextAnnotations == null) return null;
 
       Class<?> rawType = Types.getRawType(type);
       if (!PRIMITIVE_CLASSES.contains(rawType)) return null;
 
-      // Clone the set and remove the annotation so that we can pass the remaining set to moshi.
-      Set<? extends Annotation> reducedAnnotations = new LinkedHashSet<>(annotations);
-      reducedAnnotations.remove(annotation);
-
       String fallbackType = fallbackType(rawType);
-      Object fallback = retrieveFallback((FallbackOnNull) annotation, fallbackType);
+      Object fallback = retrieveFallback(nextAnnotations.first, fallbackType);
 
-      return new FallbackOnNullJsonAdapter<>(moshi.adapter(type, reducedAnnotations),
+      return new FallbackOnNullJsonAdapter<>(moshi.adapter(type, nextAnnotations.second),
           fallback, fallbackType);
     }
 
