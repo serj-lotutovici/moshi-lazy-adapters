@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * {@linkplain JsonAdapter} that will serialize {@code T} even if the passed value is {@code null}.
  */
-public final class SerializeNullsJsonAdapter<T> extends JsonAdapter<T> {
+public final class SerializeNullsJsonAdapter {
   public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
@@ -36,31 +36,11 @@ public final class SerializeNullsJsonAdapter<T> extends JsonAdapter<T> {
           Types.nextAnnotations(annotations, SerializeNulls.class);
       if (nextAnnotations == null) return null;
 
-      return new SerializeNullsJsonAdapter<>(moshi.adapter(type, nextAnnotations));
+      return moshi.adapter(type, nextAnnotations).serializeNulls();
     }
   };
 
-  private final JsonAdapter<T> delegate;
-
-  SerializeNullsJsonAdapter(JsonAdapter<T> delegate) {
-    this.delegate = delegate;
-  }
-
-  @Override public T fromJson(JsonReader reader) throws IOException {
-    return delegate.fromJson(reader);
-  }
-
-  @Override public void toJson(JsonWriter writer, T value) throws IOException {
-    boolean oldSerializeNulls = writer.getSerializeNulls();
-    writer.setSerializeNulls(true);
-    try {
-      delegate.toJson(writer, value);
-    } finally {
-      writer.setSerializeNulls(oldSerializeNulls);
-    }
-  }
-
-  @Override public String toString() {
-    return delegate + ".serializeNulls()";
+  private SerializeNullsJsonAdapter() {
+    throw new AssertionError("No instances.");
   }
 }
