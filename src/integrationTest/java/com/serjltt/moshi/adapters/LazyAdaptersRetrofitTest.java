@@ -129,12 +129,12 @@ public final class LazyAdaptersRetrofitTest {
   private interface Service {
     /** Helps to test the unwrap adapter. */
     @GET("/")
-    @Wrapped({"one", "two"}) Call<String> unwrap();
+    @Wrapped(path = {"one", "two"}) Call<String> unwrap();
 
     @GET("/")
-    @Wrapped({"one", "two"}) Call<Nested> unwrapNested();
+    @Wrapped(path = {"one", "two"}) Call<Nested> unwrapNested();
 
-    @POST("/") Call<ResponseBody> wrappedPost(@Body @Wrapped({"1", "2"}) String value);
+    @POST("/") Call<ResponseBody> wrappedPost(@Body @Wrapped(path = {"1", "2"}) String value);
 
     /** Helps to test the first element json adapter. */
     @GET("/")
@@ -142,7 +142,7 @@ public final class LazyAdaptersRetrofitTest {
 
     /** Helps to test the first element json adapter. */
     @GET("/")
-    @Wrapped({"one", "two"})
+    @Wrapped(path = {"one", "two"})
     @FirstElement Call<String> unwrapFirstElement();
 
     @GET("/")
@@ -150,8 +150,8 @@ public final class LazyAdaptersRetrofitTest {
   }
 
   static class Nested {
-    @Json(name = "item") @Wrapped("foo") String foo;
-    @Json(name = "item2") @Wrapped("bar") int bar;
+    @Json(name = "item") @Wrapped(path = "foo") String foo;
+    @Json(name = "item2") @Wrapped(path = "bar") int bar;
     int foobar;
   }
 }

@@ -37,8 +37,8 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
       if (nextAnnotations == null) return null;
 
       JsonAdapter<Object> adapter = moshi.adapter(type, nextAnnotations.second);
-      return new WrappedJsonAdapter<>(adapter, nextAnnotations.first.value(),
-          nextAnnotations.first.failOnNotFound());
+      Wrapped wrapped = nextAnnotations.first;
+      return new WrappedJsonAdapter<>(adapter, wrapped.path(), wrapped.failOnNotFound());
     }
   };
 
@@ -53,12 +53,6 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
   }
 
   @Override public T fromJson(JsonReader reader) throws IOException {
-    // Don't read if the whole object is null.
-    if (reader.peek() == JsonReader.Token.NULL) {
-      return reader.nextNull();
-    }
-
-    // We start form the first element of the path.
     return fromJson(delegate, reader, path, 0, failOnNotFound);
   }
 
@@ -130,15 +124,18 @@ public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
    */
   private static <T> void toJson(JsonAdapter<T> adapter, JsonWriter writer, T value,
       String[] path, int index) throws IOException {
-    if (index == path.length) {
-      adapter.toJson(writer, value);
+    if (value != null || writer.getSerializeNulls()) {
+      if (index == path.length) {
+        adapter.toJson(writer, value);
+      } else {
+        writer.beginObject();
+        writer.name(path[index]);
+        toJson(adapter, writer, value, path, ++index);
+        writer.endObject();
+      }
     } else {
-      writer.setSerializeNulls(true);
-      writer.beginObject();
-      writer.name(path[index]);
-      toJson(adapter, writer, value, path, ++index);
-      writer.endObject();
-      writer.setSerializeNulls(false);
+      // If we don't propagate the null value the writer will throw.
+      writer.nullValue();
     }
   }
 }
