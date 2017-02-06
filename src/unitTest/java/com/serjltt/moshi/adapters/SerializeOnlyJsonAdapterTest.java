@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class SerializeOnlyJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(SerializeOnlyJsonAdapter.FACTORY)
-      .add(SerializeNullsJsonAdapter.FACTORY)
+      .add(SerializeOnly.ADAPTER_FACTORY)
+      .add(SerializeNulls.ADAPTER_FACTORY)
       .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .build();
 

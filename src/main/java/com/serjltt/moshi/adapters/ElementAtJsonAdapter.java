@@ -22,30 +22,15 @@ import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /**
  * {@linkplain JsonAdapter} that extracts the element at the given index
  * of an array of (a field) type annotated with {@linkplain ElementAt}.
  */
-public final class ElementAtJsonAdapter<T> extends JsonAdapter<T> {
-  public static final Factory FACTORY = new Factory() {
-    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
-        Moshi moshi) {
-      Pair<ElementAt, Set<Annotation>> nextAnnotations =
-          nextAnnotations(annotations, ElementAt.class);
-      if (nextAnnotations == null || !nextAnnotations.second.isEmpty()) return null;
-
-      return new ElementAtJsonAdapter<>(type, moshi, nextAnnotations.first.index());
-    }
-  };
-
+final class ElementAtJsonAdapter<T> extends JsonAdapter<T> {
   private final JsonAdapter<List<T>> delegate;
   private final int index;
 

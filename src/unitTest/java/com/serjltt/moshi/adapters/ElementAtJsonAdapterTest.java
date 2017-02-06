@@ -34,7 +34,7 @@ import static org.junit.Assert.fail;
 public final class ElementAtJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(ElementAtJsonAdapter.FACTORY)
+      .add(ElementAt.ADAPTER_FACTORY)
       .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .build();
 
@@ -119,7 +119,7 @@ public final class ElementAtJsonAdapterTest {
         });
       }
     };
-    assertThat(ElementAtJsonAdapter.FACTORY.create(String.class, annotations, moshi)).isNull();
+    assertThat(ElementAt.ADAPTER_FACTORY.create(String.class, annotations, moshi)).isNull();
 
     // Emulate existing annotation (should also return null).
     annotations.add(new ElementAt() {
@@ -131,7 +131,7 @@ public final class ElementAtJsonAdapterTest {
         return 0;
       }
     });
-    assertThat(ElementAtJsonAdapter.FACTORY.create(String.class, annotations, moshi)).isNull();
+    assertThat(ElementAt.ADAPTER_FACTORY.create(String.class, annotations, moshi)).isNull();
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {

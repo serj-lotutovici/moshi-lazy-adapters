@@ -15,19 +15,24 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * Indicates that the annotated type/field is <strong>expected</strong> to be the first element of a
- * json array and will be serialized/deserialized by {@linkplain FirstElementJsonAdapter}.
+ * json array.
  *
- * <p>For example if a json object is:
+ * <p>For example if a json object is returned as:
  * <pre>
  *   [
  *    {
@@ -36,8 +41,8 @@ import java.lang.annotation.Target;
  *    }
  *   ]
  * </pre>
- * And the consumer only cares about the actual element, if using retrofit a service method would
- * look like:
+ * And the consumer only cares about the actual element, in the case of using a retrofit service
+ * method the code would look like:
  *
  * <pre><code>
  *   {@literal @}GET("path/")
@@ -47,12 +52,12 @@ import java.lang.annotation.Target;
  * The resulting response returned by {@code response.body()} will be an instance of {@code
  * DataObject} with the respective values set.
  *
- * <p>To leverage from {@linkplain FirstElement} the {@linkplain FirstElementJsonAdapter#FACTORY}
+ * <p>To leverage from {@link FirstElement} {@linkplain FirstElement#ADAPTER_FACTORY}
  * must be added to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(FirstElementJsonAdapter.FACTORY)
+ *      .add(FirstElement.ADAPTER_FACTORY)
  *      .build();
  * </code></pre>
  */
@@ -61,4 +66,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface FirstElement {
+  /** Builds an adapter that can process a types annotated with {@link FirstElement}. */
+  JsonAdapter.Factory ADAPTER_FACTORY = new JsonAdapter.Factory() {
+    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
+        Moshi moshi) {
+      Set<? extends Annotation> nextAnnotations =
+          Types.nextAnnotations(annotations, FirstElement.class);
+      if (nextAnnotations == null || !nextAnnotations.isEmpty()) return null;
+
+      return new ElementAtJsonAdapter<>(type, moshi, 0);
+    }
+  };
 }

@@ -16,18 +16,23 @@
 
 package com.serjltt.moshi.adapters;
 
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /**
  * Indicates that the annotated type/field is <strong>expected</strong> to be the element
- * at the given index of a json array and will be serialized/deserialized
- * by {@linkplain ElementAtJsonAdapter}.
+ * at the given index of a json array.
  *
  * <p>For example if a json object is:
  * <pre>
@@ -53,12 +58,12 @@ import java.lang.annotation.Target;
  * The resulting response returned by {@code response.body()} will be an instance of {@code
  * DataObject} with the respective values set.
  *
- * <p>To leverage from {@linkplain ElementAt} the {@linkplain ElementAtJsonAdapter#FACTORY}
- * must be added to a {@linkplain Moshi Moshi instance}:
+ * <p>To leverage from {@link ElementAt} {@link ElementAt#ADAPTER_FACTORY}
+ * must be added to your {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(ElementAtJsonAdapter.FACTORY)
+ *      .add(ElementAt.ADAPTER_FACTORY)
  *      .build();
  * </code></pre>
  */
@@ -73,4 +78,16 @@ public @interface ElementAt {
    * the companion adapter will return {@code null}.
    */
   int index();
+
+  /** Builds an adapter that can process a types annotated with {@link ElementAt}. */
+  JsonAdapter.Factory ADAPTER_FACTORY = new JsonAdapter.Factory() {
+    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
+        Moshi moshi) {
+      Pair<ElementAt, Set<Annotation>> nextAnnotations =
+          nextAnnotations(annotations, ElementAt.class);
+      if (nextAnnotations == null || !nextAnnotations.second.isEmpty()) return null;
+
+      return new ElementAtJsonAdapter<>(type, moshi, nextAnnotations.first.index());
+    }
+  };
 }

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public final class DeserializeOnlyAutoValueTest {
   private final Moshi moshi = new Moshi.Builder()
-      .add(DeserializeOnlyJsonAdapter.FACTORY)
+      .add(DeserializeOnly.ADAPTER_FACTORY)
       .add(DataFactories.create())
       .build();
 
