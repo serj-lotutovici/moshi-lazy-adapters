@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class SerializeOnlyNonEmptyJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(SerializeOnlyNonEmptyJsonAdapter.FACTORY)
+      .add(SerializeOnlyNonEmpty.ADAPTER_FACTORY)
       .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .build();
 
@@ -39,9 +39,9 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"customArray\": [{"
-        +     "\"data\":\"blub\""
-        +   "}]\n"
+        + "\"customArray\": [{"
+        + "\"data\":\"blub\""
+        + "}]\n"
         + "}");
     assertThat(fromJson.customArray).isNotNull().hasSize(1);
     assertThat(fromJson.customArray[0].data).isEqualTo("blub");
@@ -49,7 +49,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     fromJson.customArray = new CustomType[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.customArray = new CustomType[] {new CustomType("blub")};
+    fromJson.customArray = new CustomType[] { new CustomType("blub") };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"customArray\":[{\"data\":\"blub\"}]}");
   }
 
@@ -57,14 +57,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"byteArray\": [1]\n"
+        + "\"byteArray\": [1]\n"
         + "}");
     assertThat(fromJson.byteArray).containsExactly((byte) 1);
 
     fromJson.byteArray = new byte[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.byteArray = new byte[] {5};
+    fromJson.byteArray = new byte[] { 5 };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"byteArray\":[5]}");
   }
 
@@ -72,14 +72,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"charArray\": [\"A\"]\n"
+        + "\"charArray\": [\"A\"]\n"
         + "}");
     assertThat(fromJson.charArray).containsExactly((char) 65);
 
     fromJson.charArray = new char[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.charArray = new char[] {65};
+    fromJson.charArray = new char[] { 65 };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"charArray\":[\"A\"]}");
   }
 
@@ -87,14 +87,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"shortArray\": [1]\n"
+        + "\"shortArray\": [1]\n"
         + "}");
     assertThat(fromJson.shortArray).containsExactly((short) 1);
 
     fromJson.shortArray = new short[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.shortArray = new short[] {5};
+    fromJson.shortArray = new short[] { 5 };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"shortArray\":[5]}");
   }
 
@@ -102,14 +102,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"intArray\": [1]\n"
+        + "\"intArray\": [1]\n"
         + "}");
     assertThat(fromJson.intArray).containsExactly(1);
 
     fromJson.intArray = new int[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.intArray = new int[] {5};
+    fromJson.intArray = new int[] { 5 };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"intArray\":[5]}");
   }
 
@@ -117,14 +117,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"longArray\": [1]\n"
+        + "\"longArray\": [1]\n"
         + "}");
     assertThat(fromJson.longArray).containsExactly(1L);
 
     fromJson.longArray = new long[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.longArray = new long[] {5L};
+    fromJson.longArray = new long[] { 5L };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"longArray\":[5]}");
   }
 
@@ -132,14 +132,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"floatArray\": [1.0]\n"
+        + "\"floatArray\": [1.0]\n"
         + "}");
     assertThat(fromJson.floatArray).containsExactly(1.f);
 
     fromJson.floatArray = new float[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.floatArray = new float[] {5f};
+    fromJson.floatArray = new float[] { 5f };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"floatArray\":[5.0]}");
   }
 
@@ -147,14 +147,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"doubleArray\": [1.0]\n"
+        + "\"doubleArray\": [1.0]\n"
         + "}");
     assertThat(fromJson.doubleArray).containsExactly(1.f);
 
     fromJson.doubleArray = new double[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.doubleArray = new double[] {5f};
+    fromJson.doubleArray = new double[] { 5f };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"doubleArray\":[5.0]}");
   }
 
@@ -162,14 +162,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"booleanArray\": [false]\n"
+        + "\"booleanArray\": [false]\n"
         + "}");
     assertThat(fromJson.booleanArray).containsExactly(false);
 
     fromJson.booleanArray = new boolean[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.booleanArray = new boolean[] {false};
+    fromJson.booleanArray = new boolean[] { false };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"booleanArray\":[false]}");
   }
 
@@ -177,14 +177,14 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"stringArray\": [\"blub\"]\n"
+        + "\"stringArray\": [\"blub\"]\n"
         + "}");
     assertThat(fromJson.stringArray).containsExactly("blub");
 
     fromJson.stringArray = new String[0];
     assertThat(adapter.toJson(fromJson)).isEqualTo("{}");
 
-    fromJson.stringArray = new String[] {"blub"};
+    fromJson.stringArray = new String[] { "blub" };
     assertThat(adapter.toJson(fromJson)).isEqualTo("{\"stringArray\":[\"blub\"]}");
   }
 
@@ -192,7 +192,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"collection\": [\"blub\"]\n"
+        + "\"collection\": [\"blub\"]\n"
         + "}");
     assertThat(fromJson.collection).containsExactly("blub");
 
@@ -207,9 +207,9 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
     JsonAdapter<Data1> adapter = moshi.adapter(Data1.class);
 
     Data1 fromJson = adapter.fromJson("{\n"
-        +   "\"map\": {"
-        +     "\"email\":\"blub\"\n"
-        +   "}\n"
+        + "\"map\": {"
+        + "\"email\":\"blub\"\n"
+        + "}\n"
         + "}");
     assertThat(fromJson.map).containsEntry("email", "blub");
 

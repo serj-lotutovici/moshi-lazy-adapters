@@ -20,7 +20,7 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public final class LazyAdaptersRxJavaTest {
   private static final Moshi MOSHI = new Moshi.Builder()
-      .add(WrappedJsonAdapter.FACTORY)
+      .add(Wrapped.ADAPTER_FACTORY)
       .build();
 
   private static Callable<String> failingCallable() {

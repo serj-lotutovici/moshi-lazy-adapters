@@ -15,24 +15,29 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * Indicates that the annotated type/field should be serialized as {@code null} in case of a
  * empty/null value.
  *
- * <p>To leverage from {@linkplain SerializeNulls} the {@linkplain
- * SerializeNullsJsonAdapter#FACTORY} must be added to a {@linkplain Moshi Moshi instance}:
+ * <p>To leverage from {@link SerializeNulls} {@link SerializeNulls#ADAPTER_FACTORY}
+ * must be added to a {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(SerializeNullsJsonAdapter.FACTORY)
+ *      .add(SerializeNulls.ADAPTER_FACTORY)
  *      .build();
  * </code></pre>
  */
@@ -41,4 +46,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface SerializeNulls {
+  /** Builds an adapter that can process a types annotated with {@link SerializeNulls}. */
+  JsonAdapter.Factory ADAPTER_FACTORY = new JsonAdapter.Factory() {
+    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
+        Moshi moshi) {
+      Set<? extends Annotation> nextAnnotations =
+          Types.nextAnnotations(annotations, SerializeNulls.class);
+      if (nextAnnotations == null) return null;
+
+      return moshi.adapter(type, nextAnnotations).serializeNulls();
+    }
+  };
 }

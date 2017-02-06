@@ -39,9 +39,9 @@ public final class LazyAdaptersRetrofitTest {
   @Rule public final MockWebServer server = new MockWebServer();
 
   private final Moshi moshi = new Moshi.Builder()
-      .add(WrappedJsonAdapter.FACTORY)
-      .add(FirstElementJsonAdapter.FACTORY)
-      .add(ElementAtJsonAdapter.FACTORY)
+      .add(Wrapped.ADAPTER_FACTORY)
+      .add(FirstElement.ADAPTER_FACTORY)
+      .add(ElementAt.ADAPTER_FACTORY)
       .build();
 
   private final Retrofit retrofit = new Retrofit.Builder()

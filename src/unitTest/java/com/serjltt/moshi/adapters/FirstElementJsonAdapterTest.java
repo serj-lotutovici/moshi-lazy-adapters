@@ -15,7 +15,6 @@
  */
 package com.serjltt.moshi.adapters;
 
-import com.pushtorefresh.private_constructor_checker.PrivateConstructorChecker;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
@@ -34,7 +33,7 @@ import static org.junit.Assert.fail;
 public final class FirstElementJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(FirstElementJsonAdapter.FACTORY)
+      .add(FirstElement.ADAPTER_FACTORY)
       .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .build();
 
@@ -113,7 +112,7 @@ public final class FirstElementJsonAdapterTest {
         });
       }
     };
-    assertThat(FirstElementJsonAdapter.FACTORY.create(String.class, annotations, moshi)).isNull();
+    assertThat(FirstElement.ADAPTER_FACTORY.create(String.class, annotations, moshi)).isNull();
 
     // Emulate existing annotation (should also return null).
     annotations.add(new Annotation() {
@@ -121,7 +120,7 @@ public final class FirstElementJsonAdapterTest {
         return FirstElement.class;
       }
     });
-    assertThat(FirstElementJsonAdapter.FACTORY.create(String.class, annotations, moshi)).isNull();
+    assertThat(FirstElement.ADAPTER_FACTORY.create(String.class, annotations, moshi)).isNull();
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
@@ -134,14 +133,6 @@ public final class FirstElementJsonAdapterTest {
 
     assertThat(adapter.toString())
         .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().elementAt(0)");
-  }
-
-  @Test public void firstElementJsonAdapterDoesNotAllowInstances() throws Exception {
-    PrivateConstructorChecker
-        .forClass(FirstElementJsonAdapter.class)
-        .expectedTypeOfException(AssertionError.class)
-        .expectedExceptionMessage("No instances.")
-        .check();
   }
 
   private void assertNullReturn(String string) throws IOException {

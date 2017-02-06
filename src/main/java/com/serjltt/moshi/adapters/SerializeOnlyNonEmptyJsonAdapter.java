@@ -3,38 +3,15 @@ package com.serjltt.moshi.adapters;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * {@linkplain JsonAdapter} that will not serialize {@code T} when the passed value is empty.
  */
-public final class SerializeOnlyNonEmptyJsonAdapter<T> extends JsonAdapter<T> {
-  public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
-    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
-        Moshi moshi) {
-      Set<? extends Annotation> nextAnnotations =
-          Types.nextAnnotations(annotations, SerializeOnlyNonEmpty.class);
-      if (nextAnnotations == null) return null;
-
-      Class<?> rawType = Types.getRawType(type);
-
-      if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)
-          || Map.class.isAssignableFrom(rawType)) {
-        return new SerializeOnlyNonEmptyJsonAdapter<>(moshi.adapter(type, nextAnnotations));
-      }
-
-      return null;
-    }
-  };
-
+final class SerializeOnlyNonEmptyJsonAdapter<T> extends JsonAdapter<T> {
   private final JsonAdapter<T> delegate;
 
   SerializeOnlyNonEmptyJsonAdapter(JsonAdapter<T> delegate) {

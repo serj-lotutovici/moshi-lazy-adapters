@@ -33,7 +33,7 @@ import static org.junit.Assert.fail;
 public final class WrappedJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(WrappedJsonAdapter.FACTORY)
+      .add(Wrapped.ADAPTER_FACTORY)
       .add(new Custom.CustomAdapter()) // We need to check that other annotations are not lost.
       .add(new ThrowingAdapter()) // We need to check that exceptions are propagated correctly.
       .build();
@@ -318,7 +318,7 @@ public final class WrappedJsonAdapterTest {
   }
 
   private static class Data2 {
-    @Wrapped(path = {"1", "2"}) Data1 data;
+    @Wrapped(path = { "1", "2" }) Data1 data;
   }
 
   private static class Data3 {
