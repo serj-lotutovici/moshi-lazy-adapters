@@ -41,12 +41,12 @@ final class FallbackOnNullJsonAdapter<T> extends JsonAdapter<T> {
     PRIMITIVE_CLASSES.add(short.class);
   }
 
-  final JsonAdapter<T> dalegate;
+  final JsonAdapter<T> delegate;
   final T fallback;
   final String fallbackType;
 
   FallbackOnNullJsonAdapter(JsonAdapter<T> delegate, T fallback, String fallbackType) {
-    this.dalegate = delegate;
+    this.delegate = delegate;
     this.fallback = fallback;
     this.fallbackType = fallbackType;
   }
@@ -56,14 +56,14 @@ final class FallbackOnNullJsonAdapter<T> extends JsonAdapter<T> {
       reader.nextNull(); // We need to consume the value.
       return fallback;
     }
-    return dalegate.fromJson(reader);
+    return delegate.fromJson(reader);
   }
 
   @Override public void toJson(JsonWriter writer, T value) throws IOException {
-    dalegate.toJson(writer, value);
+    delegate.toJson(writer, value);
   }
 
   @Override public String toString() {
-    return dalegate + ".fallbackOnNull(" + fallbackType + '=' + fallback + ')';
+    return delegate + ".fallbackOnNull(" + fallbackType + '=' + fallback + ')';
   }
 }
