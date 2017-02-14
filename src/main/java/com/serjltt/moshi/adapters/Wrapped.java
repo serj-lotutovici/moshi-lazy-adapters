@@ -24,11 +24,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Set;
+
+import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /**
- * Indicates that the annotated type/field should be unwrapped by the {@linkplain
- * WrappedJsonAdapter} and can be found in the provided {@code path}.
+ * Indicates that the annotated type/field should be unwrapped from the provided {@code path}.
  *
  * <p>For example if a json object is:
  * <pre>
@@ -38,8 +41,8 @@ import java.util.Arrays;
  *     }
  *   }
  * </pre>
- * And the consumer only cares about the value of {@code status}, if using retrofit a service method
- * would look like:
+ * And the consumer only cares about the value of {@code status}, if using retrofit, a service
+ * method would look like:
  *
  * <pre><code>
  *   {@literal @}GET("path/")
@@ -49,23 +52,23 @@ import java.util.Arrays;
  * The resulting response returned by {@code response.body()} will be a {@code String} with the
  * value {@code "OK"}.
  *
- * <p>To leverage from {@linkplain Wrapped} the {@linkplain WrappedJsonAdapter#FACTORY} must be
- * added to a {@linkplain Moshi Moshi instance}:
+ * <p>To leverage from {@link Wrapped} {@link Wrapped#ADAPTER_FACTORY} must be
+ * added to your {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(WrappedJsonAdapter.FACTORY)
+ *      .add(Wrapped.ADAPTER_FACTORY)
  *      .build();
  * </code></pre>
  *
  * <b>DISCLAIMER: </b> The order of {@linkplain JsonAdapter added json adapters} maters, to ensure
- * {@linkplain WrappedJsonAdapter WrappedJsonAdapter's} correct behaviour it must be the
- * <strong>first</strong> custom adapter added to the {@linkplain Moshi.Builder}.
+ * {@linkplain Wrapped correct un-wrapping} behaviour the adapter factory must be the
+ * <strong>first</strong> custom adapter added to the {@link Moshi.Builder}.
  */
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 public @interface Wrapped {
   /** The path to the wrapped json path. */
   String[] path();
@@ -75,6 +78,19 @@ public @interface Wrapped {
    * Default {@code true}.
    */
   boolean failOnNotFound() default true;
+
+  /** Builds an adapter that can process a types annotated with {@link Wrapped}. */
+  JsonAdapter.Factory ADAPTER_FACTORY = new JsonAdapter.Factory() {
+    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
+        Moshi moshi) {
+      Pair<Wrapped, Set<Annotation>> nextAnnotations = nextAnnotations(annotations, Wrapped.class);
+      if (nextAnnotations == null) return null;
+
+      JsonAdapter<Object> adapter = moshi.adapter(type, nextAnnotations.second);
+      Wrapped wrapped = nextAnnotations.first;
+      return new WrappedJsonAdapter<>(adapter, wrapped.path(), wrapped.failOnNotFound());
+    }
+  };
 
   /** Allows to easily create a new instance of {@link Wrapped} annotation. */
   final class Factory {

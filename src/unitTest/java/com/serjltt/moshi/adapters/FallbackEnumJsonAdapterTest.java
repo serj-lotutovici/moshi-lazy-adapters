@@ -30,7 +30,7 @@ import static org.junit.Assert.fail;
 public final class FallbackEnumJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(FallbackEnumJsonAdapter.FACTORY)
+      .add(FallbackEnum.ADAPTER_FACTORY)
       .build();
 
   @Test public void asRegularEnumAdapter() throws Exception {
@@ -86,11 +86,11 @@ public final class FallbackEnumJsonAdapterTest {
   }
 
   @Test public void factoryIgnoresUnsupportedTypes() throws Exception {
-    JsonAdapter<?> adapter1 = FallbackEnumJsonAdapter.FACTORY
+    JsonAdapter<?> adapter1 = FallbackEnum.ADAPTER_FACTORY
         .create(String.class, Collections.<Annotation>emptySet(), moshi);
     assertThat(adapter1).isNull();
 
-    JsonAdapter<?> adapter2 = FallbackEnumJsonAdapter.FACTORY
+    JsonAdapter<?> adapter2 = FallbackEnum.ADAPTER_FACTORY
         .create(Roshambo.class, Collections.singleton(Wrapped.Factory.create("")), moshi);
     assertThat(adapter2).isNull();
   }
@@ -98,12 +98,12 @@ public final class FallbackEnumJsonAdapterTest {
   @FallbackEnum(name = "UNKNOWN") enum Roshambo {
     ROCK,
     PAPER,
-    @Json(name = "scr") SCISSORS,
+    @Json(name = "scr")SCISSORS,
     UNKNOWN
   }
 
   @FallbackEnum(name = "UNK") enum Value {
-    @SuppressWarnings("unused") UNKNOWN
+    @SuppressWarnings("unused")UNKNOWN
   }
 
   enum Regular {

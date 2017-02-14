@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class FallbackOnNullJsonAdapterTest {
   // Lazy adapters work only within the context of moshi.
   private final Moshi moshi = new Moshi.Builder()
-      .add(FallbackOnNullJsonAdapter.FACTORY)
+      .add(FallbackOnNull.ADAPTER_FACTORY)
       .add(new Multiply.MultiplyAdapter())
       .build();
 
@@ -216,7 +216,7 @@ public final class FallbackOnNullJsonAdapterTest {
     };
 
     for (Class<?> cls : classes) {
-      assertThat(FallbackOnNullJsonAdapter.FACTORY.create(cls, ANNOTATIONS, moshi)).isNull();
+      assertThat(FallbackOnNull.ADAPTER_FACTORY.create(cls, ANNOTATIONS, moshi)).isNull();
     }
   }
 

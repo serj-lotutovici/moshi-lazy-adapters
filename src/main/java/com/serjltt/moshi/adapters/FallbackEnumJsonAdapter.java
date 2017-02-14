@@ -20,39 +20,15 @@ import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * {@linkplain JsonAdapter} that fallbacks to a default enum constant declared in the enum type
  * annotated with {@linkplain FallbackEnum}.
  */
-public final class FallbackEnumJsonAdapter<T extends Enum<T>> extends JsonAdapter<T> {
-  public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
-    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
-        Moshi moshi) {
-      if (!annotations.isEmpty()) return null;
-
-      Class<?> rawType = Types.getRawType(type);
-      if (rawType.isEnum()) {
-        FallbackEnum annotation = rawType.getAnnotation(FallbackEnum.class);
-        if (annotation == null) return null;
-
-        //noinspection unchecked
-        return new FallbackEnumJsonAdapter<>((Class<? extends Enum>) rawType, annotation.name())
-            .nullSafe();
-      }
-
-      return null;
-    }
-  };
-
+final class FallbackEnumJsonAdapter<T extends Enum<T>> extends JsonAdapter<T> {
   private final Class<T> enumType;
   private final T fallbackConstant;
   private final Map<String, T> nameConstantMap;

@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /** Test all lazy adapters to work in integration with AutoValue extensions. */
 public class LazyAdaptersAutoValueTest {
   private final Moshi moshi = new Moshi.Builder()
-      .add(WrappedJsonAdapter.FACTORY)
+      .add(Wrapped.ADAPTER_FACTORY)
       .add(DataFactories.create())
       .build();
 

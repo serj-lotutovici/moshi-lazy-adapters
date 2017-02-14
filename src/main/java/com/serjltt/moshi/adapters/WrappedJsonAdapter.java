@@ -19,29 +19,11 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Set;
-
-import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /** {@linkplain JsonAdapter} that unwraps the type/field annotated with {@linkplain Wrapped}. */
-public final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
-  public static final JsonAdapter.Factory FACTORY = new JsonAdapter.Factory() {
-    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
-        Moshi moshi) {
-      Pair<Wrapped, Set<Annotation>> nextAnnotations = nextAnnotations(annotations, Wrapped.class);
-      if (nextAnnotations == null) return null;
-
-      JsonAdapter<Object> adapter = moshi.adapter(type, nextAnnotations.second);
-      Wrapped wrapped = nextAnnotations.first;
-      return new WrappedJsonAdapter<>(adapter, wrapped.path(), wrapped.failOnNotFound());
-    }
-  };
-
+final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
   private final JsonAdapter<T> delegate;
   private final String[] path;
   private final boolean failOnNotFound;

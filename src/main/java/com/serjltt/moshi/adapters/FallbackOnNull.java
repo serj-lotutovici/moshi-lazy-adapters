@@ -15,24 +15,32 @@
  */
 package com.serjltt.moshi.adapters;
 
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
 /**
  * Indicates that the annotated field may be {@code null} in the json source and thus requires a
  * fallback value.
  *
- * <p>To leverage from {@linkplain FallbackOnNull} the {@linkplain FallbackOnNullJsonAdapter#FACTORY
- * } must be added to a {@linkplain Moshi Moshi instance}:
+ * <p>To leverage from {@linkplain FallbackOnNull} {@linkplain FallbackOnNull#ADAPTER_FACTORY}
+ * must be added to your {@linkplain Moshi Moshi instance}:
  *
  * <pre><code>
  *   Moshi moshi = new Moshi.Builder()
- *      .add(FallbackOnNullJsonAdapter.FACTORY)
+ *      .add(FallbackOnNull.ADAPTER_FACTORY)
  *      .build();
  * </code></pre>
  */
@@ -64,4 +72,40 @@ public @interface FallbackOnNull {
 
   /** Fallback value for {@code short} primitives. Default: {@code Short.MIN_VALUE}. */
   short fallbackShort() default Short.MIN_VALUE;
+
+  /** Builds an adapter that can process a types annotated with {@link FallbackOnNull}. */
+  JsonAdapter.Factory ADAPTER_FACTORY = new JsonAdapter.Factory() {
+    @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
+        Moshi moshi) {
+      Pair<FallbackOnNull, Set<Annotation>> nextAnnotations =
+          nextAnnotations(annotations, FallbackOnNull.class);
+      if (nextAnnotations == null) return null;
+
+      Class<?> rawType = Types.getRawType(type);
+      if (!FallbackOnNullJsonAdapter.PRIMITIVE_CLASSES.contains(rawType)) return null;
+
+      String fallbackType = fallbackType(rawType);
+      Object fallback = retrieveFallback(nextAnnotations.first, fallbackType);
+
+      return new FallbackOnNullJsonAdapter<>(moshi.adapter(type, nextAnnotations.second),
+          fallback, fallbackType);
+    }
+
+    /** Invokes the appropriate fallback method based on the {@code fallbackType}. */
+    private Object retrieveFallback(FallbackOnNull annotation, String fallbackType) {
+      try {
+        Method fallbackMethod = FallbackOnNull.class.getMethod(fallbackType);
+        return fallbackMethod.invoke(annotation);
+      } catch (Exception e) {
+        throw new AssertionError(e);
+      }
+    }
+
+    /** Constructs the appropriate fallback method name based on the {@code rawType}. */
+    private String fallbackType(Class<?> rawType) {
+      String typeName = rawType.getSimpleName();
+      String methodSuffix = typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
+      return "fallback" + methodSuffix;
+    }
+  };
 }
