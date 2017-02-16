@@ -118,7 +118,7 @@ public final class LastElementJsonAdapterTest {
         }));
 
     assertThat(adapter.toString())
-        .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().lastElement");
+        .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().lastElement()");
   }
 
   private void assertNullReturn(String string) throws IOException {

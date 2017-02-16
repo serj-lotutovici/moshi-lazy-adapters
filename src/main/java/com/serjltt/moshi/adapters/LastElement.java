@@ -51,7 +51,7 @@ import java.util.Set;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface LastElement {
-  /** Builds an adapter that can process a types annotated with {@link LastElement}. */
+  /** Builds an adapter that can process a type/field annotated with {@link LastElement}. */
   JsonAdapter.Factory ADAPTER_FACTORY = new JsonAdapter.Factory() {
     @Override public JsonAdapter<?> create(Type type, Set<? extends Annotation> annotations,
         Moshi moshi) {
