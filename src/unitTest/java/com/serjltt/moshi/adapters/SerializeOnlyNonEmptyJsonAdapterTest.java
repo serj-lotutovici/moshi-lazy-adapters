@@ -229,7 +229,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
         }));
 
     assertThat(adapter.toString())
-        .endsWith(".serializeOnlyNonEmpty()");
+        .isEqualTo("JsonAdapter(String).nullSafe().array().nullSafe().serializeOnlyNonEmpty()");
   }
 
   static class Data1 {
