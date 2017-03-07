@@ -10,7 +10,7 @@ import java.util.Iterator;
 /**
  * {@link JsonAdapter} that filters null values out.
  */
-final class FilterNullsJsonAdapter<T extends Collection<?>> extends JsonAdapter<T> {
+final class FilterNullsJsonAdapter<T> extends JsonAdapter<T> {
   private final JsonAdapter<T> delegate;
 
   FilterNullsJsonAdapter(JsonAdapter<T> delegate) {
@@ -30,7 +30,7 @@ final class FilterNullsJsonAdapter<T extends Collection<?>> extends JsonAdapter<
   }
 
   private T removeNulls(final T value) {
-    final Iterator<?> it = value.iterator();
+    final Iterator<?> it = ((Collection<?>) value).iterator();
 
     while (it.hasNext()) {
       if (it.next() == null) {
