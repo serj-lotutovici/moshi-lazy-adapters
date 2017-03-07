@@ -18,10 +18,8 @@ package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -221,12 +219,7 @@ public final class SerializeOnlyNonEmptyJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<String> adapter = moshi.adapter(String[].class, Collections.singleton(
-        new SerializeOnlyNonEmpty() {
-          @Override public Class<? extends Annotation> annotationType() {
-            return SerializeOnlyNonEmpty.class;
-          }
-        }));
+    JsonAdapter<String> adapter = moshi.adapter(String[].class, SerializeOnlyNonEmpty.class);
 
     assertThat(adapter.toString())
         .isEqualTo("JsonAdapter(String).nullSafe().array().nullSafe().serializeOnlyNonEmpty()");

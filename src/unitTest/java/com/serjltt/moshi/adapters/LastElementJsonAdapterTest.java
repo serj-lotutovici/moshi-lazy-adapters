@@ -6,7 +6,6 @@ import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.junit.Ignore;
@@ -110,12 +109,7 @@ public final class LastElementJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<String> adapter = moshi.adapter(String.class,
-        Collections.singleton(new LastElement() {
-          @Override public Class<? extends Annotation> annotationType() {
-            return LastElement.class;
-          }
-        }));
+    JsonAdapter<String> adapter = moshi.adapter(String.class, LastElement.class);
 
     assertThat(adapter.toString())
         .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().lastElement()");

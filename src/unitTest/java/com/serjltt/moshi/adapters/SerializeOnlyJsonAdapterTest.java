@@ -2,8 +2,6 @@ package com.serjltt.moshi.adapters;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.lang.annotation.Annotation;
-import java.util.Collections;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,12 +41,7 @@ public final class SerializeOnlyJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<String> adapter =
-        moshi.adapter(String.class, Collections.singleton(new SerializeOnly() {
-          @Override public Class<? extends Annotation> annotationType() {
-            return SerializeOnly.class;
-          }
-        }));
+    JsonAdapter<String> adapter = moshi.adapter(String.class, SerializeOnly.class);
 
     assertThat(adapter.toString()).isEqualTo("JsonAdapter(String).nullSafe().serializeOnly()");
   }

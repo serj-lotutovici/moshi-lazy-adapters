@@ -18,8 +18,6 @@ package com.serjltt.moshi.adapters;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
-import java.lang.annotation.Annotation;
-import java.util.Collections;
 import okio.Buffer;
 import org.junit.Test;
 
@@ -77,12 +75,7 @@ public final class SerializeNullsJsonAdapterTest {
   }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
-    JsonAdapter<String> adapter = moshi.adapter(String.class, Collections.singleton(
-        new SerializeNulls() {
-          @Override public Class<? extends Annotation> annotationType() {
-            return SerializeNulls.class;
-          }
-        }));
+    JsonAdapter<String> adapter = moshi.adapter(String.class, SerializeNulls.class);
 
     assertThat(adapter.toString())
         .isEqualTo("JsonAdapter(String).nullSafe().serializeNulls()");
