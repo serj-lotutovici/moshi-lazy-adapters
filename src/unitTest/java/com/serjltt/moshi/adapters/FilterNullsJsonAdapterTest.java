@@ -40,6 +40,17 @@ public final class FilterNullsJsonAdapterTest {
     assertThat(toJson).isEqualTo("[\"apple\",\"banana\"]");
   }
 
+  @Test public void nullList() throws Exception {
+    JsonAdapter<List<String>> adapter = moshi.adapter(Types.newParameterizedType(List.class,
+        String.class), FilterNulls.class);
+
+    List<String> fromJson = adapter.fromJson("null");
+    assertThat(fromJson).isNull();
+
+    String toJson = adapter.toJson(null);
+    assertThat(toJson).isEqualTo("null");
+  }
+
   @Test public void toStringReflectsInnerAdapter() throws Exception {
     JsonAdapter<String> adapter = moshi.adapter(Types.newParameterizedType(Collection.class,
         String.class), FilterNulls.class);

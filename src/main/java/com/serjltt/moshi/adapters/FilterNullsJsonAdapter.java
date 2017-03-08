@@ -30,11 +30,13 @@ final class FilterNullsJsonAdapter<T> extends JsonAdapter<T> {
   }
 
   private T removeNulls(final T value) {
-    final Iterator<?> it = ((Collection<?>) value).iterator();
+    if (value != null) {
+      final Iterator<?> it = ((Collection<?>) value).iterator();
 
-    while (it.hasNext()) {
-      if (it.next() == null) {
-        it.remove();
+      while (it.hasNext()) {
+        if (it.next() == null) {
+          it.remove();
+        }
       }
     }
 
