@@ -9,7 +9,7 @@ import static com.serjltt.moshi.adapters.DefaultOnDataMismatchAdapterTest.Fruit.
 import static com.serjltt.moshi.adapters.DefaultOnDataMismatchAdapterTest.Fruit.BANANA;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class DefaultOnDataMismatchAdapterTest {
+public final class DefaultOnDataMismatchAdapterTest {
   private Moshi moshi = new Moshi.Builder()
       .add(DefaultOnDataMismatchAdapter.newFactory(Fruit.class, null))
       .build();
@@ -27,6 +27,12 @@ public class DefaultOnDataMismatchAdapterTest {
   @Test public void serialize() {
     String fruit = moshi.adapter(Fruit.class).toJson(APPLE);
     assertThat(fruit).isEqualTo("\"apple\"");
+  }
+
+  @Test public void toStringReflectsInner() {
+    assertThat(moshi.adapter(Fruit.class).toString())
+        .isEqualTo("JsonAdapter(com.serjltt.moshi.adapters.DefaultOnDataMismatchAdapterTest$Fruit)"
+            + ".nullSafe().defaultOnDatMisMatch(null)");
   }
 
   enum Fruit {
