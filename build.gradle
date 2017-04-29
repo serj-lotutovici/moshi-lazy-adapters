@@ -7,7 +7,7 @@ buildscript {
 
   // Needed to use auto-value-moshi in tests
   dependencies {
-    classpath 'com.github.tbroyer:gradle-apt-plugin:v0.8'
+    classpath 'com.github.tbroyer:gradle-apt-plugin:v0.10'
   }
 }
 
@@ -15,8 +15,10 @@ repositories {
   mavenCentral()
 }
 
-apply plugin: 'java'
 apply plugin: 'net.ltgt.apt'
+apply plugin: 'java'
+apply plugin: 'idea'
+
 apply from: rootProject.file('dependencies.gradle')
 apply from: rootProject.file('checkstyle.gradle')
 apply from: rootProject.file('jacoco.gradle')
