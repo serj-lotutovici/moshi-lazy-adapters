@@ -20,6 +20,7 @@ import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -56,11 +57,11 @@ public final class DefaultOnDataMismatchAdapter<T> extends JsonAdapter<T> {
   }
 
   /** Builds an adapter that fallbacks to a default value in case there's a mismatch. */
-  public static <T> JsonAdapter.Factory newFactory(final Class<T> type, final T defaultValue) {
+  public static <T> JsonAdapter.Factory newFactory(final Type type, final T defaultValue) {
     return new Factory() {
       @Override public JsonAdapter<?> create(Type requestedType,
           Set<? extends Annotation> annotations, Moshi moshi) {
-        if (type == requestedType) {
+        if (Types.equals(type, requestedType)) {
           JsonAdapter<T> delegate = moshi.nextAdapter(this, type, annotations);
           return new DefaultOnDataMismatchAdapter<>(delegate, defaultValue);
         }
