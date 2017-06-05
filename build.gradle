@@ -12,9 +12,6 @@ buildscript {
 
 repositories {
   mavenCentral()
-
-  // TODO Remove this before releasing 2.0
-  maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 apply plugin: 'net.ltgt.apt'
