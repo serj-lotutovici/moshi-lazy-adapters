@@ -2,6 +2,7 @@ Change Log
 ===
 
 2.0 *(06-06-2017)*
+---
 * New: Move all adapter factories to their respective annotations. (#47)
 * New: Added `DefaultOnDataMismatchAdapter`. (#54)
 * New: Added `@FilterNulls` annotation and its respective adapter. (#52)
@@ -19,6 +20,7 @@ Change Log
    ```
 
 1.3 *(04-01-2017)*
+---
 * New: Added `SerializeOnlyNonEmpty` for all collections and arrays.
 * New: Allow `WrappedJsonAdapter` to fail on un-found value.
 * New: Upgrade to Moshi 1.3.0.
