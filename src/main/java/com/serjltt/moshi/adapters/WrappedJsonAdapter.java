@@ -58,7 +58,7 @@ final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
       return adapter.fromJson(reader);
     } else {
       reader.beginObject();
-      IOException caughtException = null;
+      Exception caughtException = null;
       try {
         String root = path[index];
         while (reader.hasNext()) {
@@ -79,13 +79,19 @@ final class WrappedJsonAdapter<T> extends JsonAdapter<T> {
             reader.skipValue();
           }
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         caughtException = e;
       } finally {
         // If the try block throw an exception, rethrow it up the stack.
-        if (caughtException != null) {
+        if (caughtException instanceof IOException) {
           //noinspection ThrowFromFinallyBlock
-          throw caughtException;
+          throw (IOException) caughtException;
+        } else if (caughtException instanceof JsonDataException) {
+          //noinspection ThrowFromFinallyBlock
+          throw (JsonDataException) caughtException;
+        } else if (caughtException != null) {
+          //noinspection ThrowFromFinallyBlock
+          throw new AssertionError(caughtException);
         }
         // If the json has an additional key, that was not red, we ignore it.
         while (reader.hasNext()) {

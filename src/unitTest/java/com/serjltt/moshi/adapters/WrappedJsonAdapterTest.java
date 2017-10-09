@@ -19,6 +19,7 @@ import com.pushtorefresh.private_constructor_checker.PrivateConstructorChecker;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
+import com.squareup.moshi.JsonEncodingException;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
 import com.squareup.moshi.Types;
@@ -230,22 +231,39 @@ public final class WrappedJsonAdapterTest {
     }
   }
 
-  @Test public void fromJsonDoesNotSwallowJsonExceptions() throws Exception {
+  @Test public void fromJsonDoesNotSwallowJsonEncodingExceptions() throws Exception {
     JsonAdapter<Data2> adapter = moshi.adapter(Data2.class);
 
     try {
       adapter.fromJson("{\n"
           + "  \"data\": {\n"
           + "    \"1\": {\n"
-          + "      \"2\": [\n"
-          + "        \"this_will_throw\"\n"
-          + "      ]\n"
+          + "      \"2\": {\n"
+          + "        \"str\": \"valid\",\n"
+          + "        \"val\": NaN\n"
+          + "      }\n"
           + "    }\n"
           + "  }\n"
           + "}");
       fail();
+    } catch (JsonEncodingException e) {
+      assertThat(e).hasMessage(
+          "Use JsonReader.setLenient(true) to accept malformed JSON at path $.data.1.2.val");
+    }
+  }
+
+  @Test public void fromJsonDoesNotSwallowJsonDataExceptions() throws Exception {
+    JsonAdapter<Data3> adapter = moshi.adapter(Data3.class);
+
+    try {
+      adapter.fromJson("{\n"
+          + "  \"str\": {\n"
+          + "    \"1\": false\n"
+          + "  }\n"
+          + "}");
+      fail();
     } catch (JsonDataException e) {
-      assertThat(e).hasMessage("Expected BEGIN_OBJECT but was BEGIN_ARRAY at path $.data.1.2");
+      assertThat(e).hasMessage("Expected a string but was BOOLEAN at path $.str.1");
     }
   }
 
