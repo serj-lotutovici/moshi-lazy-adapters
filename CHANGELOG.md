@@ -1,6 +1,10 @@
 Change Log
 ===
 
+2.1 *(11-10-2017)*
+---
+* Fix: Forces WrappedJsonAdapter to re-throw all exceptions. (#60)
+
 2.0 *(06-06-2017)*
 ---
 * New: Move all adapter factories to their respective annotations. (#47)
