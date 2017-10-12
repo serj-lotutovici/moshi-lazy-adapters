@@ -165,7 +165,7 @@ List of provided Adapters
 * **FallbackOnNull (annotation)** - Fallbacks to a default value in case the json field is `null`.
 * **FallbackEnum (annotation)** - Fallbacks to a default enum value if the parsed value can not be matched to an existing one.
 * **Wrapped (annotation)** - Unwraps a json object under the specified path when parsing, and wraps it when serializing to json.
-* **SerializeOnl (annotation)y** - Only serializes the annotated field, and ignores it during deserialization.
+* **SerializeOnly (annotation)** - Only serializes the annotated field, and ignores it during deserialization.
 * **DeserializeOnly (annotation)** - Only deserializes the annotated field, and ignores it during serialization.
 * **Transient (annotation)** - (Targets methods only) indicates that a field should be ignored for serialization/deserialization.
 * **SerializeOnlyNonEmpty (annotation)** - Will serialize a collection or array only if it contains at-least one value.
