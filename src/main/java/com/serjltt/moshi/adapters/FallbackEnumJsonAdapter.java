@@ -35,10 +35,10 @@ final class FallbackEnumJsonAdapter<T extends Enum<T>> extends JsonAdapter<T> {
   private final String[] nameStrings;
 
   FallbackEnumJsonAdapter(Class<T> enumType, String fallback) {
+    fallbackConstant = Enum.valueOf(enumType, fallback);
     this.enumType = enumType;
 
     try {
-      int fallbackConstantIndex = -1;
       T[] constants = enumType.getEnumConstants();
       nameConstantMap = new LinkedHashMap<>();
       nameStrings = new String[constants.length];
@@ -49,16 +49,6 @@ final class FallbackEnumJsonAdapter<T extends Enum<T>> extends JsonAdapter<T> {
         String name = annotation != null ? annotation.name() : constant.name();
         nameConstantMap.put(name, constant);
         nameStrings[i] = name;
-
-        if (fallback.equals(constant.name())) {
-          fallbackConstantIndex = i;
-        }
-      }
-
-      if (fallbackConstantIndex != -1) {
-        fallbackConstant = constants[fallbackConstantIndex];
-      } else {
-        throw new NoSuchFieldException("Filed \"" + fallback + "\" is not declared.");
       }
     } catch (NoSuchFieldException e) {
       throw new AssertionError("Missing field in " + enumType.getName(), e);
