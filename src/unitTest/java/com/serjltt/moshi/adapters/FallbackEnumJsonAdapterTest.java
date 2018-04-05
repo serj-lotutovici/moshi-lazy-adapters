@@ -60,7 +60,7 @@ public final class FallbackEnumJsonAdapterTest {
     } catch (Error ex) {
       assertThat(ex).hasMessage("Missing field in "
           + "com.serjltt.moshi.adapters.FallbackEnumJsonAdapterTest$Value");
-      assertThat(ex.getCause()).hasMessage("Filed \"UNK\" is not declared.");
+      assertThat(ex.getCause()).hasMessage("Field \"UNK\" is not declared.");
     }
   }
 

@@ -58,7 +58,7 @@ final class FallbackEnumJsonAdapter<T extends Enum<T>> extends JsonAdapter<T> {
       if (fallbackConstantIndex != -1) {
         fallbackConstant = constants[fallbackConstantIndex];
       } else {
-        throw new NoSuchFieldException("Filed \"" + fallback + "\" is not declared.");
+        throw new NoSuchFieldException("Field \"" + fallback + "\" is not declared.");
       }
     } catch (NoSuchFieldException e) {
       throw new AssertionError("Missing field in " + enumType.getName(), e);
