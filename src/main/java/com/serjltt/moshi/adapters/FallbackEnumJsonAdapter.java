@@ -21,8 +21,6 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * {@linkplain JsonAdapter} that fallbacks to a default enum constant declared in the enum type
@@ -30,45 +28,33 @@ import java.util.Map;
  */
 final class FallbackEnumJsonAdapter<T extends Enum<T>> extends JsonAdapter<T> {
   private final Class<T> enumType;
-  private final T fallbackConstant;
-  private final Map<String, T> nameConstantMap;
   private final String[] nameStrings;
+  private final T[] constants;
+  private final JsonReader.Options options;
+  private final T fallbackConstant;
 
   FallbackEnumJsonAdapter(Class<T> enumType, String fallback) {
+    fallbackConstant = Enum.valueOf(enumType, fallback);
     this.enumType = enumType;
-
     try {
-      int fallbackConstantIndex = -1;
-      T[] constants = enumType.getEnumConstants();
-      nameConstantMap = new LinkedHashMap<>();
+      constants = enumType.getEnumConstants();
       nameStrings = new String[constants.length];
-
       for (int i = 0; i < constants.length; i++) {
         T constant = constants[i];
         Json annotation = enumType.getField(constant.name()).getAnnotation(Json.class);
         String name = annotation != null ? annotation.name() : constant.name();
-        nameConstantMap.put(name, constant);
         nameStrings[i] = name;
-
-        if (fallback.equals(constant.name())) {
-          fallbackConstantIndex = i;
-        }
       }
-
-      if (fallbackConstantIndex != -1) {
-        fallbackConstant = constants[fallbackConstantIndex];
-      } else {
-        throw new NoSuchFieldException("Field \"" + fallback + "\" is not declared.");
-      }
+      options = JsonReader.Options.of(nameStrings);
     } catch (NoSuchFieldException e) {
-      throw new AssertionError("Missing field in " + enumType.getName(), e);
+      throw new AssertionError(e);
     }
   }
 
   @Override public T fromJson(JsonReader reader) throws IOException {
-    String name = reader.nextString();
-    T constant = nameConstantMap.get(name);
-    if (constant != null) return constant;
+    int index = reader.selectString(options);
+    if (index != -1) return constants[index];
+    reader.nextString();
     return fallbackConstant;
   }
 
