@@ -57,10 +57,9 @@ public final class FallbackEnumJsonAdapterTest {
     try {
       moshi.adapter(Value.class);
       fail();
-    } catch (Error ex) {
-      assertThat(ex).hasMessage("Missing field in "
-          + "com.serjltt.moshi.adapters.FallbackEnumJsonAdapterTest$Value");
-      assertThat(ex.getCause()).hasMessage("Filed \"UNK\" is not declared.");
+    } catch (IllegalArgumentException expected) {
+      assertThat(expected).hasMessage(
+          "No enum constant com.serjltt.moshi.adapters.FallbackEnumJsonAdapterTest.Value.UNK");
     }
   }
 
@@ -98,12 +97,12 @@ public final class FallbackEnumJsonAdapterTest {
   @FallbackEnum(name = "UNKNOWN") enum Roshambo {
     ROCK,
     PAPER,
-    @Json(name = "scr")SCISSORS,
+    @Json(name = "scr") SCISSORS,
     UNKNOWN
   }
 
   @FallbackEnum(name = "UNK") enum Value {
-    @SuppressWarnings("unused")UNKNOWN
+    @SuppressWarnings("unused") UNKNOWN
   }
 
   enum Regular {
