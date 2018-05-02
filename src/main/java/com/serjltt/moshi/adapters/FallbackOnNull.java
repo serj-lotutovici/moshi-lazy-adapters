@@ -104,7 +104,7 @@ public @interface FallbackOnNull {
     /** Constructs the appropriate fallback method name based on the {@code rawType}. */
     private String fallbackType(Class<?> rawType) {
       String typeName = rawType.getSimpleName();
-      String methodSuffix = typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
+      String methodSuffix = typeName.substring(0, 1).toUpperCase(Locale.ENGLISH) + typeName.substring(1);
       return "fallback" + methodSuffix;
     }
   };
