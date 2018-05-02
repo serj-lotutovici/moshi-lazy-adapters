@@ -20,9 +20,6 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
-
-import org.junit.Test;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
@@ -32,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
