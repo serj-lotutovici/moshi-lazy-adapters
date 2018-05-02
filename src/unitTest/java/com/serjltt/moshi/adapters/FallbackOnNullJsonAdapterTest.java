@@ -132,8 +132,12 @@ public final class FallbackOnNullJsonAdapterTest {
   }
 
   @Test public void intFallbacksNoLocaleInfluence() throws Exception {
+    Locale defaultLocale = Locale.getDefault();
+
     Locale.setDefault(new Locale("tr", "TR"));
     assertForClass(WrapsInt.class, Integer.MIN_VALUE, -1, "{\"first\":-2147483648,\"second\":-1}");
+
+    Locale.setDefault(defaultLocale);
   }
 
   private static class WrapsInt implements Wrapper<Integer> {
