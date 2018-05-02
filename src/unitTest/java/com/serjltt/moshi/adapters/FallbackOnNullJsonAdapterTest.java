@@ -27,6 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import org.junit.Test;
 
@@ -128,6 +129,15 @@ public final class FallbackOnNullJsonAdapterTest {
 
   @Test public void intFallbacks() throws Exception {
     assertForClass(WrapsInt.class, Integer.MIN_VALUE, -1, "{\"first\":-2147483648,\"second\":-1}");
+  }
+
+  @Test public void intFallbacksNoLocaleInfluence() throws Exception {
+    Locale defaultLocale = Locale.getDefault();
+
+    Locale.setDefault(new Locale("tr", "TR"));
+    assertForClass(WrapsInt.class, Integer.MIN_VALUE, -1, "{\"first\":-2147483648,\"second\":-1}");
+
+    Locale.setDefault(defaultLocale);
   }
 
   private static class WrapsInt implements Wrapper<Integer> {

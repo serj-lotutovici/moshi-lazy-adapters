@@ -28,6 +28,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
+import java.util.Locale;
 
 import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 
@@ -104,7 +105,7 @@ public @interface FallbackOnNull {
     /** Constructs the appropriate fallback method name based on the {@code rawType}. */
     private String fallbackType(Class<?> rawType) {
       String typeName = rawType.getSimpleName();
-      String methodSuffix = typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
+      String methodSuffix = typeName.substring(0, 1).toUpperCase(Locale.US) + typeName.substring(1);
       return "fallback" + methodSuffix;
     }
   };
