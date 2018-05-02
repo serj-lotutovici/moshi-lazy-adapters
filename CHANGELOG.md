@@ -1,6 +1,11 @@
 Change Log
 ===
 
+2.2 *(02-05-2018)*
+---
+* Usage selectString in FallbackEnumJsonAdapter. (#64)
+* Fix FallbackOnNull naming bug with implicit user locale. (#66)
+
 2.1 *(11-10-2017)*
 ---
 * Fix: Forces WrappedJsonAdapter to re-throw all exceptions. (#60)
