@@ -20,6 +20,9 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
+
+import org.junit.Test;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
@@ -27,8 +30,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -127,6 +130,11 @@ public final class FallbackOnNullJsonAdapterTest {
   }
 
   @Test public void intFallbacks() throws Exception {
+    assertForClass(WrapsInt.class, Integer.MIN_VALUE, -1, "{\"first\":-2147483648,\"second\":-1}");
+  }
+
+  @Test public void intFallbacksNoLocaleInfluence() throws Exception {
+    Locale.setDefault(new Locale("tr", "TR"));
     assertForClass(WrapsInt.class, Integer.MIN_VALUE, -1, "{\"first\":-2147483648,\"second\":-1}");
   }
 
