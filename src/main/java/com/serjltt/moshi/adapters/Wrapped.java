@@ -61,7 +61,7 @@ import static com.serjltt.moshi.adapters.Util.nextAnnotations;
  *      .build();
  * </code></pre>
  *
- * <b>DISCLAIMER: </b> The order of {@linkplain JsonAdapter added json adapters} maters, to ensure
+ * <b>DISCLAIMER: </b> The order of {@linkplain JsonAdapter added json adapters} matters, to ensure
  * {@linkplain Wrapped correct un-wrapping} behaviour the adapter factory must be the
  * <strong>first</strong> custom adapter added to the {@link Moshi.Builder}.
  */
