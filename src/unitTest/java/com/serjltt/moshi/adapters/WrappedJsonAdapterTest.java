@@ -20,10 +20,15 @@ import com.squareup.moshi.FromJson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.JsonEncodingException;
+import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
 import com.squareup.moshi.Types;
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
@@ -330,6 +335,20 @@ public final class WrappedJsonAdapterTest {
         .check();
   }
 
+  @Test public void factoryFetchesWrappedFromDelegate() throws Exception {
+    JsonAdapter<Data5> adapter = moshi.adapter(Data5.class);
+
+    Data5 fromJson = adapter.fromJson("{\n"
+            + "  \"str\": {\n"
+            + "    \"1\": \"test\"\n"
+            + "  }\n"
+            + "}");
+    assertThat(fromJson.str).isEqualTo("test");
+
+    String toJson = adapter.toJson(fromJson);
+    assertThat(toJson).isEqualTo("{\"str\":{\"1\":\"test\"}}");
+  }
+
   private static class Data1 {
     String str;
     int val;
@@ -348,8 +367,17 @@ public final class WrappedJsonAdapterTest {
     @Wrapped(path = "1") Throws th;
   }
 
+  private static class Data5 {
+    @WrappedDelegate String str;
+  }
   private static class Throws {
   }
+
+  @JsonQualifier
+  @Wrapped(path = "1")
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+  @interface WrappedDelegate {}
 
   /** String adapter, that will throw on read and write. */
   private static final class ThrowingAdapter {

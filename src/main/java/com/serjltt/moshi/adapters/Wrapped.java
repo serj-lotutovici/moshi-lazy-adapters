@@ -68,7 +68,7 @@ import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 public @interface Wrapped {
   /** The path to the wrapped json path. */
   String[] path();
