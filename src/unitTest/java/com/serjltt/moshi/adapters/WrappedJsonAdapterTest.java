@@ -377,7 +377,7 @@ public final class WrappedJsonAdapterTest {
   @Wrapped(path = "1")
   @Retention(RetentionPolicy.RUNTIME)
   @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
-  @interface WrappedDelegate {}
+  @interface WrappedDelegate { }
 
   /** String adapter, that will throw on read and write. */
   private static final class ThrowingAdapter {

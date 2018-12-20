@@ -19,9 +19,14 @@ package com.serjltt.moshi.adapters;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
+import com.squareup.moshi.JsonQualifier;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -103,7 +108,7 @@ public final class ElementAtJsonAdapterTest {
   }
 
   // This one is redundant, but keeps JaCoCo quiet
-  @Test public void factoryExpectsOnlyOneAnnotation() throws Exception {
+  @Test public void factoryExpectsOnlyOneAnnotation() {
     // A list of fake annotations.
     Set<Annotation> annotations = new LinkedHashSet<Annotation>() {
       {
@@ -150,6 +155,27 @@ public final class ElementAtJsonAdapterTest {
         .isEqualTo("JsonAdapter(String).nullSafe().collection().nullSafe().elementAt(2)");
   }
 
+  @Test public void elementAtDelegated() throws Exception {
+    JsonAdapter<Data3> adapter = moshi.adapter(Data3.class);
+
+    Data3 fromJson = adapter.fromJson("{\n"
+            + "  \"obj\": [\n"
+            + "    \"one\",\n"
+            + "    \"two\"\n"
+            + "  ]\n"
+            + "}");
+    assertThat(fromJson.str).isEqualTo("two");
+
+    String toJson = adapter.toJson(fromJson);
+    assertThat(toJson).isEqualTo("{\"obj\":[\"two\"]}");
+  }
+
+  @JsonQualifier
+  @ElementAt(index = 1)
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+  @interface AlwaysElementAtIndexOne { }
+
   private void assertNullReturn(String string) throws IOException {
     JsonAdapter<Data> adapter = moshi.adapter(Data.class);
 
@@ -168,5 +194,10 @@ public final class ElementAtJsonAdapterTest {
   private static class Data2 {
     @ElementAt(index = 0)
     @Custom String str;
+  }
+
+  private static class Data3 {
+    @AlwaysElementAtIndexOne
+    @Json(name = "obj") String str;
   }
 }

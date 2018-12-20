@@ -54,7 +54,8 @@ final class Util {
     return null;
   }
 
-  private static <A extends Annotation> A findDelegatedAnnotation(Annotation annotation, Class<A> jsonQualifier) {
+  private static <A extends Annotation> A findDelegatedAnnotation(
+    Annotation annotation, Class<A> jsonQualifier) {
     for (Annotation delegatedAnnotation : annotation.annotationType().getAnnotations()) {
       if (jsonQualifier.equals(delegatedAnnotation.annotationType())) {
         //noinspection unchecked
