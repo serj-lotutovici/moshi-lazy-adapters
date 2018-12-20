@@ -44,6 +44,22 @@ final class Util {
         //noinspection unchecked Protected by the if statment.
         return new Pair<>((A) annotation, Collections.unmodifiableSet(delegateAnnotations));
       }
+      A delegate = findDelegatedAnnotation(annotation, jsonQualifier);
+      if (delegate != null) {
+        Set<? extends Annotation> delegateAnnotations = new LinkedHashSet<>(annotations);
+        delegateAnnotations.remove(annotation);
+        return new Pair<>(delegate, Collections.unmodifiableSet(delegateAnnotations));
+      }
+    }
+    return null;
+  }
+
+  private static <A extends Annotation> A findDelegatedAnnotation(Annotation annotation, Class<A> jsonQualifier) {
+    for (Annotation delegatedAnnotation : annotation.annotationType().getAnnotations()) {
+      if (jsonQualifier.equals(delegatedAnnotation.annotationType())) {
+        //noinspection unchecked
+        return (A) delegatedAnnotation;
+      }
     }
     return null;
   }
