@@ -48,7 +48,7 @@ import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.ANNOTATION_TYPE })
 public @interface FallbackOnNull {
   /** Fallback value for {@code boolean} primitives. Default: {@code false}. */
   boolean fallbackBoolean() default false;

@@ -70,7 +70,7 @@ import static com.serjltt.moshi.adapters.Util.nextAnnotations;
 @Documented
 @JsonQualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.ANNOTATION_TYPE })
 public @interface ElementAt {
   /**
    * Represents the index location at which the element will be expected to be.

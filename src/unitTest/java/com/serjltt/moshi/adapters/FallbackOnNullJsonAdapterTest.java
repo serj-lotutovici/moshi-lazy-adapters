@@ -22,8 +22,10 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.ToJson;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -209,7 +211,7 @@ public final class FallbackOnNullJsonAdapterTest {
     @FallbackOnNull(fallbackInt = 2) @Multiply int willMultiply;
   }
 
-  @Test public void factoryIgnoresNonPrimitiveTypes() throws Exception {
+  @Test public void factoryIgnoresNonPrimitiveTypes() {
     List<Class<?>> classes = new ArrayList<Class<?>>() {
       {
         add(Boolean.class);
@@ -229,6 +231,25 @@ public final class FallbackOnNullJsonAdapterTest {
       assertThat(FallbackOnNull.ADAPTER_FACTORY.create(cls, ANNOTATIONS, moshi)).isNull();
     }
   }
+
+  @Test public void fallbackOnNullIsDelegated() throws Exception {
+    JsonAdapter<AndAnotherInt> adapter = moshi.adapter(AndAnotherInt.class);
+
+    AndAnotherInt fromJson = adapter.fromJson("{\n"
+            + "  \"willFallback\": null\n"
+            + "}");
+    assertThat(fromJson.willFallback).isEqualTo(2);
+  }
+
+  private static class AndAnotherInt {
+    @AlwaysFallBackToTwoOnNull int willFallback;
+  }
+
+  @JsonQualifier
+  @FallbackOnNull(fallbackInt = 2)
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+  @interface AlwaysFallBackToTwoOnNull { }
 
   @Test public void toStringReflectsInnerAdapter() throws Exception {
     JsonAdapter<Integer> adapter = moshi.adapter(int.class, ANNOTATIONS);
